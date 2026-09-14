@@ -1026,6 +1026,28 @@ Durable self-knowledge, curated run by run; ephemeral state belongs in
   whose brand package pins tokens the same declarative way `tokens.css`
   does could use `contrast.ts` directly, with no conversion needed.
 
+- **A library's own bot-detection (`navigator.webdriver`) can make a real,
+  shipped behaviour structurally unobservable through `agent-browser`, a
+  distinct category from the iOS-simulator/print-media/zoom-emulation gaps
+  already logged above — those are missing CDP primitives, this is a
+  deliberate design choice the page's own code makes.** On
+  `comp4020-ass2-baishi`, `astromotion`'s first-run help-hint overlay (the
+  one styled component with a `prefers-reduced-motion` guard in the whole
+  deck stack) explicitly checks `navigator.webdriver === true` and never
+  renders at all for an automated view — confirmed live,
+  `agent-browser eval "navigator.webdriver"` returns `true` in this
+  environment, and the source comment names the reasoning directly
+  ("Any browser being driven programmatically... is not a viewer who needs
+  teaching the key bindings"). No amount of `agent-browser set media
+  reduced-motion` or session-storage clearing gets around this — the guard
+  fires before either would matter. Two things worth doing when this
+  pattern is hit again: (1) grep the dependency's own source for
+  `webdriver`/`isAutomated`/similar before spending time debugging why an
+  expected element never appears in a live check; (2) don't chase it
+  further when the gated code is upstream platform/theme code rather than
+  this deliverable's own content — the same course-vs-platform boundary
+  that already governs which `spec/` tests are this repo's to write.
+
 ## Open threads for future runs
 
 - `comp4020-crit5-baishi` (Two-Tone, a colour-match falling-circle dodge
@@ -1588,6 +1610,24 @@ Durable self-knowledge, curated run by run; ephemeral state belongs in
   Not the last run — no reflection expected (assignment, not a crit). See
   `now.md` for the flagged next angles (full site tab-order walk,
   Lighthouse, `pnpm audit`/`outdated`, reduced-motion on the deck).
+  A second run, 2026-09-14, 159h-to-cutoff, worked that exact list. `pnpm
+  audit` found 12 vulnerabilities (1 critical, 7 high, 4 moderate),
+  including a real astro advisory reachable at the pinned version; a plain
+  in-range `pnpm update` cleared every one with no pin crossing a major
+  version, `pnpm check` staying green (`85fd45d`). A copy-vs-behaviour pass
+  found one real inconsistency: every other in-prose assessment reference
+  site-wide deliberately links the generic `/assessments/` listing with
+  generic anchor text, but the policies page named a specific assessment
+  ("Assignment 1") while still linking the generic listing — fixed to link
+  its own page (`98796bb`). The keyboard tab-order walk, a first-ever
+  Lighthouse run (clean, all five categories 1.0 — unlike every other
+  deliverable's first Lighthouse run in this file, which all found
+  something), and a home-page-prose-vs-assessment-structure check all came
+  back "checked, confirmed correct." The reduced-motion check hit a new
+  category of unverifiable-live gap — see the dedicated `navigator.webdriver`
+  entry below. `PROCESS.md` left unchanged (already at 598 of this
+  assignment's 600-word cap); see `now.md` for the note that the audit fix
+  is worth swapping in if a future run has trimming room. Not the last run.
 - Writing `PROCESS.md` incrementally during a build/deepen run (not only in
   the inside-24h finishing steps) worked well twice now — crit-2's two
   deepening fixes and assignment-1's shrimp-geometry fix were both written

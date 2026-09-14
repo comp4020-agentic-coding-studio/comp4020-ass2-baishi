@@ -7,62 +7,72 @@ deliverable: comp4020-ass2-baishi
 
 ## State
 
-This run (165h to cutoff) picked up `comp4020-ass2-baishi` — a course-site
-build for SLOP2474, "The Forger's Craft" (Astro + `astro-theme-university` +
-`astro-theme-slop`) — mid-build: content, config, policies, spec and a
-starting `PROCESS.md` were all already in place and pushed from a prior
-run/tick, but no live-browser verification had happened yet. `git status`
-was clean and matched `origin/main` at the start.
+This run (159h to cutoff) worked the exact untried-angle list the prior run's
+`now.md` had flagged: keyboard tab-order walk, Lighthouse, `pnpm audit`/
+`outdated`, `prefers-reduced-motion` on the deck, and a copy-vs-behaviour prose
+pass. Two real, small findings, both fixed and pushed (`98796bb`):
 
-This run did the doctrine's build/deepen work, not finishing steps (the
-prompt didn't call it last, and this course carries no `reflections/` —
-`PROCESS.md` is the assignment's written account):
+- `pnpm audit` found 12 vulnerabilities (1 critical, 7 high, 4 moderate) in
+  transitive deps, including a real astro advisory (GHSA-376h-93r7-7g6f, <=7.2.3)
+  and an svgo one (GHSA-4vpr-x523-8j87). A plain in-range `pnpm update`
+  (astro 7.2.2→7.3.2, sharp/@astrojs/mdx/vitest/@types/node patch-level, no
+  pin crossing a major version) cleared every finding; `pnpm audit` now
+  clean, `pnpm check` still green. Committed `85fd45d`.
+- Copy-vs-behaviour pass on `src/pages/policies/index.mdx`: every other
+  in-prose assessment reference across the site deliberately links the
+  generic `/assessments/` listing with generic anchor text ("assessment
+  page") — a real, consistent convention, confirmed by grepping every
+  instance. The policies page was the one exception: it named a specific
+  assessment ("Assignment 1") but still linked the generic listing instead
+  of `/assessments/the-convincing-copy/`. Fixed to link the specific page.
+  Committed `98796bb`.
 
-- Read the canonical brief JSON fresh and re-checked the repo against it —
-  content, weights, spec item 5 ("own checks in `spec/`") all already
-  satisfied.
-- Ran a real live-browser pass (`pnpm preview` + `agent-browser`) across
-  both marking viewports (1920×1080, 390×844) and every page type: home,
-  lecture, session, assessment, the week-1 deck (including real
-  keyboard-driven slide advance), policies, people/listing pages.
-- Found one real defect: `.at-card-title` inherited `--at-accent`, which
-  this brand's `slop.css` pins straight to gold (`--at-primary`) — 3.43:1
-  against the theme's derived card background, under the 4.5:1 AA
-  minimum for normal text. Axe-core never flags this (it reports oklch
-  colours "incomplete," not fail — confirmed live, not assumed). This fix
-  was already sitting in a prior tick's uncommitted `astro.config.ts` +
-  `src/styles/card-title-contrast.css` change (commit `653a9e2`); this run
-  confirmed it actually renders correctly (`getComputedStyle` → bronze,
-  matching the fix) and is properly cited.
-- Considered and explicitly declined a permanent `spec/` regression test
-  for that fix: the theme's own `contrast.ts` helpers parse
-  `light-dark(oklch(...))` tokens, but `slop.css` pins flat hex, so a real
-  test would need this repo to reimplement a hex→oklch conversion the
-  theme doesn't export — judged as manufacturing a fragile test rather
-  than a genuine one. Documented in `PROCESS.md`, not just decided
-  silently.
-- The 9 axe "incomplete" nodes on the home page (nav links, hero heading,
-  tag badges) were traced by hand (DOM ancestor walk, `getComputedStyle`)
-  to the same oklch/gradient/pseudo-element axe limitation, not real
-  defects — no code change.
-- Rewrote `PROCESS.md`'s "before you ship" section into a real account of
-  the above, trimmed to the brief's 400–600 word limit (now 598, 8 cited
-  commits). Verified `pnpm check` and `pnpm check:evidence` both green,
-  committed (`fed3ba8`) and pushed.
+Other angles came back "checked, confirmed correct" or structurally
+unverifiable, not defects:
+
+- Keyboard tab-order walk (desktop viewport, home page): skip link → wordmark
+  → nav (Lectures/Studios/Assessment/People/Policies) → labelled search
+  button ("Search (Cmd+K)") → hero card links, all with visible outline. Clean.
+- Lighthouse (first run ever on this repo): all five categories 1.0
+  (performance/accessibility/best-practices/seo/agentic-browsing), zero
+  console errors. A genuinely clean first result, unlike ass1/crit-4/crit-5's
+  first Lighthouse runs which all found something.
+- `prefers-reduced-motion` on the deck: astromotion's only reduced-motion
+  guard styles a first-run help-hint overlay, and that overlay's own code
+  (`node_modules/astromotion/src/first-run-help.ts`) deliberately never
+  renders when `navigator.webdriver === true` — confirmed this session's
+  `agent-browser` reports `navigator.webdriver` as `true`, so the hint (and
+  therefore its reduced-motion guard) is structurally unobservable via CDP
+  automation by the theme's own design ("Any browser being driven
+  programmatically... is not a viewer who needs teaching the key
+  bindings"). Also upstream platform code (astromotion), not this course's
+  own content — didn't chase further. Log this as a new category alongside
+  the existing iOS-touch-emulation gap: some live checks are blocked by a
+  library's own automation-detection, not a sandbox tooling gap.
+- Home-page prose cross-check: "three finished pieces — a convincing copy, a
+  written case against a sample you didn't make, and an object with a
+  history built to match it" matches the three real assessments
+  (the-convincing-copy / the-tell / provenance) exactly. No fix needed.
+
+`PROCESS.md` is unchanged this run — already at 598 words against this
+assignment's hard 400–600 cap (tighter than a crit's 600–900), so the two new
+commits above aren't cited yet. Not a gap to leave standing forever: if a
+future run has room to trim an existing paragraph, the audit fix is the more
+citation-worthy of the two (a real, numbered vulnerability count cleared) and
+could replace a less load-bearing sentence elsewhere. Not urgent — `PROCESS.md`
+doesn't need to cite every commit, only support its own narrative with real
+ones, and the current 8-commit narrative still holds together.
 
 Not the last run. No reflection expected for this repo (assignment, not a
-crit) — `PROCESS.md` is the account.
+crit).
 
 ## Next action
 
-The repo is in strong shape: real content throughout, all checks green,
-live-verified at both viewports. A future run should treat "nothing found"
-as a legitimate deepen-pass outcome here, not a signal to invent busywork.
-Untried angles worth reaching for first, roughly in order of likely payoff:
-a full keyboard tab-order walk across the site chrome (only the deck's own
-keyboard nav has been checked so far); a Lighthouse run (never done on this
-repo); `pnpm audit`/`pnpm outdated`; a `prefers-reduced-motion` check on
-whatever transition the deck uses between slides; and a copy-vs-behaviour
-prose pass (does anything the pages claim about the course match what the
-build actually enforces). Read `PROCESS.md` first — it's the current,
-accurate account, 8 cited commits.
+Read `PROCESS.md` first (598 words, 8 cited commits, unchanged this run).
+Genuinely untried angles left: a full keyboard tab-order walk beyond the home
+page (lecture/session/assessment/people page chrome, and the deck's own tab
+order distinct from its arrow-key nav); a 200%-zoom reflow check (never done
+on this repo); a real mobile-viewport (390×844) pass of everything checked
+here at desktop only. If `PROCESS.md` ever needs trimming room, swap in the
+`pnpm audit` fix as a cited moment — it's a stronger, more countable finding
+than at least one existing sentence.

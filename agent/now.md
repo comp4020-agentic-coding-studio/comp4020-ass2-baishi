@@ -1,48 +1,68 @@
 ---
-updated: 2026-08-31
-deliverable: comp4020-crit5-baishi
+updated: 2026-09-14
+deliverable: comp4020-ass2-baishi
 ---
 
 # Now
 
 ## State
 
-Eighteenth and **final** run on `comp4020-crit5-baishi`, 34h to cutoff.
-`git status` was clean and `origin/main` matched local `HEAD` (`1779b26`)
-at the start, confirming the seventeenth run's hand-off was accurate.
+This run (165h to cutoff) picked up `comp4020-ass2-baishi` — a course-site
+build for SLOP2474, "The Forger's Craft" (Astro + `astro-theme-university` +
+`astro-theme-slop`) — mid-build: content, config, policies, spec and a
+starting `PROCESS.md` were all already in place and pushed from a prior
+run/tick, but no live-browser verification had happened yet. `git status`
+was clean and matched `origin/main` at the start.
 
-Ran the doctrine's finishing steps rather than another deepening pass,
-since this run's prompt named it the last:
+This run did the doctrine's build/deepen work, not finishing steps (the
+prompt didn't call it last, and this course carries no `reflections/` —
+`PROCESS.md` is the assignment's written account):
 
-- `pnpm check` green (21 tests) before touching anything.
-- A fresh `pnpm preview` pass at both marking viewports: console clean at
-  1920x1080 and 390x844, a fresh axe-core sweep at 0 violations, a
-  screenshot confirming the sky-blue/amber pair and the swap button still
-  render correctly on mobile, `html-validate` clean except the expected
-  doctype/void-style non-issues. Shut the preview server down afterwards
-  (needed a `kill <pid>` — `pkill -f "vite preview --port 4173"` didn't
-  actually stop it here, unlike the `pgrep`-self-match false-positive
-  already logged in `MEMORY.md`; this one was a real miss, worth noting
-  as a second, distinct pkill/pgrep-by-pattern gotcha for this repo).
-- Wrote `reflections/crit-5.md` (283 words, both standing prompts): the
-  breakthrough named is the clause-by-clause re-derivation technique
-  itself — treating "the checks are green" as the start of a question
-  rather than the end of one — since that's what actually kept finding
-  real bugs across a dozen-plus runs after the automated sensor battery
-  first read as exhausted, more than any single fix.
-- `pnpm check:evidence` fully clean: the reflection resolves, all 16
-  cited `PROCESS.md` commits resolve.
-- Committed (`bc2c7bb`) and pushed to `origin/main`.
+- Read the canonical brief JSON fresh and re-checked the repo against it —
+  content, weights, spec item 5 ("own checks in `spec/`") all already
+  satisfied.
+- Ran a real live-browser pass (`pnpm preview` + `agent-browser`) across
+  both marking viewports (1920×1080, 390×844) and every page type: home,
+  lecture, session, assessment, the week-1 deck (including real
+  keyboard-driven slide advance), policies, people/listing pages.
+- Found one real defect: `.at-card-title` inherited `--at-accent`, which
+  this brand's `slop.css` pins straight to gold (`--at-primary`) — 3.43:1
+  against the theme's derived card background, under the 4.5:1 AA
+  minimum for normal text. Axe-core never flags this (it reports oklch
+  colours "incomplete," not fail — confirmed live, not assumed). This fix
+  was already sitting in a prior tick's uncommitted `astro.config.ts` +
+  `src/styles/card-title-contrast.css` change (commit `653a9e2`); this run
+  confirmed it actually renders correctly (`getComputedStyle` → bronze,
+  matching the fix) and is properly cited.
+- Considered and explicitly declined a permanent `spec/` regression test
+  for that fix: the theme's own `contrast.ts` helpers parse
+  `light-dark(oklch(...))` tokens, but `slop.css` pins flat hex, so a real
+  test would need this repo to reimplement a hex→oklch conversion the
+  theme doesn't export — judged as manufacturing a fragile test rather
+  than a genuine one. Documented in `PROCESS.md`, not just decided
+  silently.
+- The 9 axe "incomplete" nodes on the home page (nav links, hero heading,
+  tag badges) were traced by hand (DOM ancestor walk, `getComputedStyle`)
+  to the same oklch/gradient/pseudo-element axe limitation, not real
+  defects — no code change.
+- Rewrote `PROCESS.md`'s "before you ship" section into a real account of
+  the above, trimmed to the brief's 400–600 word limit (now 598, 8 cited
+  commits). Verified `pnpm check` and `pnpm check:evidence` both green,
+  committed (`fed3ba8`) and pushed.
 
-This deliverable is now **fully shipped**. The repo still has no reflection
-gap, no missing citation, and a clean working tree. The only thing left
-unresolved across the whole run history is the human-timed five-minute
-play session — explicitly not self-administerable, needs the studio crit
-itself, not a future run of this agent.
+Not the last run. No reflection expected for this repo (assignment, not a
+crit) — `PROCESS.md` is the account.
 
 ## Next action
 
-None for this deliverable — it's finished. If a future run is ever pointed
-back at this repo (e.g. a `-retro` follow-up), start by reading `PROCESS.md`
-(18 cited moments) and this file's history in `MEMORY.md`'s "Open threads"
-section before assuming anything is still open.
+The repo is in strong shape: real content throughout, all checks green,
+live-verified at both viewports. A future run should treat "nothing found"
+as a legitimate deepen-pass outcome here, not a signal to invent busywork.
+Untried angles worth reaching for first, roughly in order of likely payoff:
+a full keyboard tab-order walk across the site chrome (only the deck's own
+keyboard nav has been checked so far); a Lighthouse run (never done on this
+repo); `pnpm audit`/`pnpm outdated`; a `prefers-reduced-motion` check on
+whatever transition the deck uses between slides; and a copy-vs-behaviour
+prose pass (does anything the pages claim about the course match what the
+build actually enforces). Read `PROCESS.md` first — it's the current,
+accurate account, 8 cited commits.

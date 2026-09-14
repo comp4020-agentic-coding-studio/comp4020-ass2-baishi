@@ -110,6 +110,23 @@ Durable self-knowledge, curated run by run; ephemeral state belongs in
   get the real pid, then `kill <pid>` directly, worked immediately. Don't
   trust a bare `pkill -f "<script line>"` to have stopped a pnpm-spawned
   dev/preview server; get the pid from the port instead.
+- A multi-line Bash call wrapping `agent-browser` in a `for ... do ... done`
+  loop can fail outright with "command not found: agent-browser" (exit 127)
+  in this sandboxed container, even though the exact same call as a plain
+  one- or two-line command immediately before and after resolves fine, and
+  `which`/`type agent-browser` confirm `$PATH` is correct right after the
+  failure. Confirmed on `comp4020-ass2-baishi` (2026-09-14) — a transient
+  shell/PATH-resolution quirk specific to that `for`-loop construct, not a
+  real missing-binary problem. Don't debug `$PATH` when this happens; just
+  stop using `for` loops for `agent-browser` calls and issue one or two
+  commands per Bash tool call instead.
+- `agent-browser eval` shares one persistent JS context across calls within
+  the same session — a second `eval` that re-declares a top-level `const`/
+  `let` name already used in an earlier `eval` throws `SyntaxError:
+  Identifier '<name>' has already been declared`, even though each snippet
+  reads fine in isolation. Wrap each `eval` snippet in an IIFE
+  (`(() => { const cs = ...; return ...; })()`) with locally-scoped names so
+  repeated ad hoc DOM-inspection snippets in one session never collide.
 
 ## Working patterns that held up
 
@@ -979,6 +996,36 @@ Durable self-knowledge, curated run by run; ephemeral state belongs in
   the brief promises) — it looks at whether a past fix's own justification
   covers its full stated scope.
 
+- **Axe-core cannot evaluate CSS colours written in `oklch()`/relative
+  colour syntax (`oklch(from var(--x) ...)`) or over gradient/pseudo-element
+  backgrounds — it reports those nodes as "incomplete," not pass or fail,
+  so a real AA contrast failure on such an element produces zero
+  violations in an automated sweep.** Found on `comp4020-ass2-baishi`
+  (2026-09-14, an Astro course-site build on `astro-theme-university`):
+  the theme derives every semantic colour token from a brand's pinned
+  `--at-primary`/`--at-secondary` via `oklch(from var(...) ...)`, and a
+  card-title element reading `--at-accent` (pinned straight to the brand's
+  gold) was a real 3.43:1 against its background — under the 4.5:1 AA
+  minimum for normal text — with axe-core flagging nothing. The theme
+  ships its own `contrast.ts` module (`oklchToSrgb`, `contrastRatio`,
+  `AA_BODY_TEXT`/`AA_LARGE_TEXT`, `parseLightDarkOklchTokens`,
+  `tokenContrast`) specifically because of this gap, with a doc comment
+  inviting brand-layer packages to test their own token overrides against
+  it. Two things worth reapplying to any future `astro-theme-university`
+  course-site deliverable: (1) don't trust an axe-core 0-violations result
+  alone on a page using oklch-derived tokens — confirm suspect text/
+  background pairs live with `getComputedStyle` and manual contrast math,
+  the same way this fix was confirmed; (2) `contrast.ts`'s parser expects
+  tokens declared in the `light-dark(oklch(...))` form the theme's own
+  `tokens.css` uses — a brand package that instead pins flat hex literals
+  (as `astro-theme-slop`'s `slop.css` does) isn't directly testable with
+  those exported helpers without first reimplementing a hex→oklch
+  conversion the module doesn't provide itself. Judged that gap not worth
+  closing with a bespoke conversion for one card-title fix (see
+  `comp4020-ass2-baishi`'s `PROCESS.md`) — but a future deliverable
+  whose brand package pins tokens the same declarative way `tokens.css`
+  does could use `contrast.ts` directly, with no conversion needed.
+
 ## Open threads for future runs
 
 - `comp4020-crit5-baishi` (Two-Tone, a colour-match falling-circle dodge
@@ -1525,6 +1572,22 @@ Durable self-knowledge, curated run by run; ephemeral state belongs in
   (visibility flip + Pages enable) is harness-owned, not something this
   agent has credentials for. Nothing left for this deliverable except a
   read-only live-URL check once the repo goes public.
+- `comp4020-ass2-baishi` (SLOP2474, "The Forger's Craft," a course-site
+  build on `astro-theme-university`/`astro-course-university`/
+  `astro-theme-slop`) arrived at this run (2026-09-14, 165h-to-cutoff)
+  already substantially built by prior runs/ticks: course config, all four
+  content collections (people/sessions/lectures/assessments), a real
+  slide deck, a course-specific policies page and `spec/course-content.test.ts`
+  were all in place and pushed. This run did a real live-browser
+  verification pass at both marking viewports across every page type,
+  found and confirmed one genuine AA-contrast fix that a prior tick had
+  already made but never verified live (see the new `contrast.ts`/oklch
+  entry above for the mechanism), declined to add a bespoke `spec/` test
+  for it, and rewrote `PROCESS.md` into a real 8-moment, 598-word account.
+  `pnpm check` and `pnpm check:evidence` both green, pushed at `fed3ba8`.
+  Not the last run — no reflection expected (assignment, not a crit). See
+  `now.md` for the flagged next angles (full site tab-order walk,
+  Lighthouse, `pnpm audit`/`outdated`, reduced-motion on the deck).
 - Writing `PROCESS.md` incrementally during a build/deepen run (not only in
   the inside-24h finishing steps) worked well twice now — crit-2's two
   deepening fixes and assignment-1's shrimp-geometry fix were both written

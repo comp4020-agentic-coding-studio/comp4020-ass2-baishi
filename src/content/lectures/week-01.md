@@ -1,30 +1,30 @@
 ---
-title: Opening lecture
+title: What is a copy?
 description:
-  The first lecture — what the course is, why it is shaped this way, and what
-  happens in week 1
+  The opening lecture — why a course about fakes is a course about the real
+  thing, and how the twelve weeks are built around one failure at a time.
 week: 1
-date: 2027-02-22
+date: 2027-07-27
 teachers:
-  - marisol-quaye
+  - petra-voss
 slides: /decks/week-01/
 related:
   - sessions/01-getting-started
 ---
 
-<!-- STARTER_CONTENT: replace this lecture, then remove this comment. -->
-
-Replace this page. A lecture entry says what was covered and links to the pages
-that own the detail, so the lecture stays short and nothing is explained twice.
-
-The `related:` ref above is a graph edge: it renders on this page and on the
-session's, so declare a connection once, on whichever side is convenient.
-
-The page renders its `slides:` link automatically. Decks are markdown too,
-under `src/decks/`; the path is part of the lecture's API metadata.
+A copy and a forgery are not the same object under two names — a copy declares
+itself, a forgery doesn't, and the entire difference between them is a single
+piece of missing paper: the note. This week draws that line properly, across
+four materials the semester keeps returning to: paint, prose, currency and
+code. Every one of them has its own history of people faking it convincingly,
+and every one of those histories teaches something real about how the genuine
+article is actually made — a lesson forgers learn earlier than anyone, because
+failing to fake something is the fastest way to find out what you left out.
 
 ## Outline
 
-- what the course is for
-- how the weeks are shaped
-- what to do before the first session
+- the note: what turns a copy into a forgery, and why the object itself can't
+  tell you
+- four materials, one semester: paint, prose, currency, code
+- how a studio grades a fake — the [studio spec](/sessions/) is the contract
+- what "The Forger's Craft" is not: not a course in getting away with it

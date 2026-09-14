@@ -1,36 +1,39 @@
 ---
 title: Getting started
 description:
-  The first session of the semester — what to have working before you arrive,
-  and what happens once you do
+  The first studio — setting up the bench, handling the materials safely, and
+  making the first deliberately bad copy of the semester.
 week: 1
-date: 2027-02-22
+date: 2027-07-29
 teachers:
-  - marisol-quaye
+  - anselm-rook
 spec:
-  - your development environment runs the course's toolchain
-  - you can build and preview the site locally
-  - you have something, however rough, to show the class
+  - you can name the three materials on your bench and one hazard of each
+  - you have attempted one small copy, however rough
+  - you can say what about your copy is wrong, in your own words
+related:
+  - lectures/week-01
 ---
-
-<!-- STARTER_CONTENT: replace this session, then remove this comment. -->
-
-Replace this page. A session brief tells a student three things: what to bring,
-what will happen, and how to tell afterwards whether it went well.
 
 ## Before the session
 
-The `spec` above is the contract. Write each line so a reader can tell whether
-it has been met without asking you --- that is the difference between a spec and
-a wish.
+Read the [policies page](/policies/) safety section before you arrive — the
+studio issues a short safety briefing on your first visit to any material,
+and you're expected to have read the general rules first so that briefing can
+be specific rather than starting from zero.
 
 ## In the session
 
-Say how the time is actually spent, in the order it happens. If the session runs
-to a repeating shape --- a demo, then feedback, then work time --- name the
-parts and say roughly how long each takes. Students plan against it.
+Anselm runs the bench setup: where materials live, how to sign them out, and
+the one rule that matters more than any technique — stop and ask before using
+anything unfamiliar without a demonstration. Then a short, deliberately
+low-stakes exercise: copy a single simple mark (a printed letterform, a
+straight ruled line) as closely as you can by hand, in about twenty minutes.
+Nobody's copy will be perfect. That's the point of week 1, not a problem with it.
 
 ## Afterwards
 
-Say what leaves the session: a mark, a piece of feedback, a decision about the
-next week's work.
+Nothing here is marked. What you leave with is a bench you know how to use
+and a first, honest look at the gap between what you intended and what your
+hand actually did — the gap the rest of the semester is about closing, one
+material at a time.

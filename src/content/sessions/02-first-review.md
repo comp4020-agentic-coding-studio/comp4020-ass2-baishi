@@ -1,36 +1,38 @@
 ---
 title: First review
 description:
-  The second session, where work made in week 1 meets an audience for the first
-  time
+  The second studio — a first look at each other's week-1 attempts, and a
+  practice run at giving feedback the connoisseur's-eye way.
 week: 2
-date: 2027-03-01
+date: 2027-08-05
 teachers:
-  - idris-fenn
+  - anselm-rook
 spec:
-  - work from week 1 is running and can be shown in under two minutes
-  - you can name the one decision you are least sure about
+  - your week-1 attempt is on the bench and you can point at the one part
+    that's wrong
+  - you have given one piece of specific feedback on someone else's attempt
+  - you can name one thing you'd check first, in the language of week 2's
+    lecture
 related:
-  - assessments/assignment-1
+  - lectures/week-02
 ---
-
-<!-- STARTER_CONTENT: replace this session, then remove this comment. -->
-
-Replace this page. It is here so the sessions listing sorts by week, the detail
-route renders a second spec, and the related block has an edge into the
-assessment collection.
 
 ## Before the session
 
-Bring the work from week 1 and the one decision you are least sure about.
+Bring your week-1 attempt, whatever state it's in, and one sentence about the
+single part of it you're least happy with.
 
 ## In the session
 
-Short demos, then feedback aimed at the decision rather than the polish. What
-makes a review worth attending is that the feedback changes what someone does
-next, so build in the time to act on it.
+Short, structured pairs review: each person points at their own weakest
+detail before anyone else comments, then their partner runs the
+connoisseur's-eye checklist from this week's lecture over it out loud —
+rhythm, material, wear, story — and says which item breaks first. The
+exercise is as much about learning to look this way as it is about the
+specific object in front of you.
 
 ## Afterwards
 
-If attendance or participation is worth marks, say so here and link the rule to
-the [assessment page](/assessments/) rather than restating it.
+Nothing here is marked, but the checklist you practise today is the same one
+a tutor uses on your submitted work all semester, so this is worth taking
+seriously as a dry run, not just a warm-up.

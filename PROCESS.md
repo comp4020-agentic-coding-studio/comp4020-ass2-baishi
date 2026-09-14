@@ -31,39 +31,51 @@ own `sharp` dependency, so I hand-authored SVG (a tilted easel, paint
 swatches, a loupe; a shared bust silhouette with one accessory per person)
 and rendered it directly to AVIF at the exact required dimensions —
 [`43a0e81`](https://github.com/comp4020-agentic-coding-studio/comp4020-ass2-baishi/commit/43a0e81).
-One real snag along the way: a temporary Node script placed outside the repo
-(`/tmp`) couldn't resolve the project's `sharp` install at all — Node's ESM
-resolver walks up from the *importing file's own directory*, not the shell's
-cwd, so a script has to actually live inside the project to see its
-`node_modules`. Moving the script in, running it, then deleting it fixed this
-in one step.
 
 The twelve-week arc —
 [`03ce274`](https://github.com/comp4020-agentic-coding-studio/comp4020-ass2-baishi/commit/03ce274)
 and
 [`78bc3e8`](https://github.com/comp4020-agentic-coding-studio/comp4020-ass2-baishi/commit/78bc3e8)
 — was written to one throughline rather than twelve independent topics:
-connoisseurship, materials science, textual and signature forgery,
-currency's own design arms-race, provenance, and code as its own forgery
-problem (plagiarism, licence-laundering, a rewritten commit history), with
-two guest weeks on synthetic media. The provenance capstone and its policy
-line
+connoisseurship, materials science, textual forgery, currency's design
+arms-race, provenance, and code's own forgery problem (plagiarism,
+licence-laundering, a rewritten commit history), plus two guest weeks on
+synthetic media. The provenance capstone and its policy line
 ([`80d8250`](https://github.com/comp4020-agentic-coding-studio/comp4020-ass2-baishi/commit/80d8250))
-are the deliberate payoff: a course whose graded work is itself a declared
-fake needs an integrity policy that draws the line at authorship, not
-resemblance, and says the identical thing about generative AI.
+are the payoff: a course whose graded work is itself a declared fake needs
+an integrity policy that draws the line at authorship, not resemblance —
+and says the identical thing about generative AI.
 
 Before treating any of this as safe, I wrote a course-specific
 `spec/course-content.test.ts`
 ([`701b9b6`](https://github.com/comp4020-agentic-coding-studio/comp4020-ass2-baishi/commit/701b9b6))
 asserting the promises the shipped tests don't: assessment weights sum to
 100, every week 1–12 has scheduled content, every lecture/studio names a
-teacher, and at least one lecture carries a real deck. All ten commits pass
-`pnpm check` (typecheck, build, and both spec files) before landing.
+teacher, and at least one deck exists. Every commit passes `pnpm check`
+before landing.
 
-## Before you ship
+## A live-browser pass, and one real defect it caught
 
-Not yet — this is a mid-build snapshot, not a finishing run. `CLAUDE.md`,
-the spec, and every `STARTER_CONTENT` marker are already in place; what's
-left is a live-browser pass at both marking viewports and the final
-reflection-equivalent check before this repo is called done.
+Both marking viewports (1920×1080, 390×844) surfaced one real accessibility
+defect axe-core's static sweep never flags as a violation: `.at-card-title`
+inherits `--at-accent`, which `slop.css` pins to its lockup gold
+(`--at-primary`) — 3.43:1 against the theme's derived card background, under
+the 4.5:1 AA minimum. Axe-core reports oklch colours as "incomplete," not
+pass/fail, since it can't evaluate CSS relative-colour syntax; the theme's
+own `contrast.ts` names checking a brand layer's tokens as that layer's job,
+not the platform's. Fixed by pointing card titles at
+`--at-secondary` (the same palette's deeper bronze, which clears AA),
+confirmed with `getComputedStyle` against the rendered page, not just the
+source —
+[`653a9e2`](https://github.com/comp4020-agentic-coding-studio/comp4020-ass2-baishi/commit/653a9e2).
+I decided against a permanent `spec/` test for it: `slop.css` pins flat hex,
+not the `light-dark(oklch(...))` form the theme's own helpers parse, and
+faking that derivation risked a fragile test over a real one.
+
+Everything else — home, every content type, the deck's keyboard-driven slide
+advance, policies, people and listing pages — was clean at both viewports:
+no console errors, 0 axe violations, and the 9 "incomplete" nodes axe
+flagged on home (nav links, hero heading, tag badges) traced by hand to that
+same oklch/gradient limitation, not a real defect. Still not a finishing
+run — `pnpm check` and `pnpm check:evidence` are both green, but no
+reflection is expected yet.

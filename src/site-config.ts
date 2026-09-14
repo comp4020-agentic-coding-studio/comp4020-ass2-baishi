@@ -2,11 +2,12 @@ import { defineSiteConfig } from "astro-theme-university/types";
 import { slopBranding } from "astro-theme-slop";
 import { courseMeta } from "./course-config";
 
-// The underlying collection and URL remain `sessions`; these labels are the
-// language students see. Change them to Studios, Tutorials, Expeditions, etc.
+// The underlying collection and URL remain `sessions`. This course teaches a
+// hands-on craft, so the weekly meeting is a workbench, not a seminar: the
+// room where the forging actually happens, under supervision and critique.
 export const sessionLabels = {
-  singular: "Session",
-  plural: "Sessions",
+  singular: "Studio",
+  plural: "Studios",
 } as const;
 
 export const graphCollections = ["sessions", "assessments", "lectures", "people"];

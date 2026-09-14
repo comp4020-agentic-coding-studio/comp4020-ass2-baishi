@@ -1,0 +1,12 @@
+/* astro-theme-university's Card/FilterableCardGrid titles read `--at-accent`,
+ * which the Slop brand pins straight to its lockup gold (`--at-primary`,
+ * #b97d1c). That's 3.43:1 on the theme's card background --- under the 4.5:1
+ * AA minimum for normal-weight text, confirmed with a real browser since
+ * axe-core cannot evaluate the theme's oklch tokens (see
+ * astro-theme-university/contrast.ts's own comment on this exact gap).
+ * `--at-secondary` (the same house palette's deeper bronze) clears 4.5:1
+ * against the same background, so titles use it instead --- no colour
+ * outside the fixed three-token brand. */
+.at-card-title {
+  color: var(--at-secondary);
+}

@@ -1,3 +1,4 @@
+import { fileURLToPath } from "node:url";
 import { defineConfig } from "astro/config";
 import courseGraph from "astro-course-university";
 import universityTheme from "astro-theme-university";
@@ -22,7 +23,15 @@ export default defineConfig({
       defaultLayout: "src/layouts/PageLayout.astro",
       // The whole brand choice: three colour tokens and a set of lockups. Keep
       // institutional brand packages and assets out of this fictional site.
-      brandCss: "astro-theme-slop/slop.css",
+      // The second file only overrides card-title contrast within that same
+      // three-token palette --- see its own comment for why. `brandCss` is
+      // injected into a virtual module outside this project's own resolution
+      // root, so a relative specifier 404s; an absolute filesystem path
+      // resolves the same everywhere this config runs.
+      brandCss: [
+        "astro-theme-slop/slop.css",
+        fileURLToPath(new URL("./src/styles/card-title-contrast.css", import.meta.url)),
+      ],
       imageFormat: "avif",
       llmsTxt: true,
       // The theme owns the markdown plugin chain, so astromotion's slide

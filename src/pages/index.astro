@@ -5,33 +5,42 @@ import ContentLayout from "astro-theme-university/layouts/ContentLayout.astro";
 import heroImage from "../assets/images/hero-home.avif";
 import { courseMeta } from "../course-config";
 import { sessionLabels, siteConfig } from "../site-config";
-
-// STARTER_CONTENT: replace the hero artwork and its alt text below, then
-// remove this comment.
 ---
 
 <ContentLayout
   title={`${courseMeta.code}: ${courseMeta.title}`}
   description={courseMeta.description}
   heroImage={heroImage}
-  heroImageAlt="A lecture theatre reduced to flat gold and black shapes, rows of seats sweeping past the frame, in a two-ink risograph print"
+  heroImageAlt="A tilted canvas on an easel, half-finished, beside paint swatches, a loaded brush and a loupe held up to inspect the work, in flat gold and black shapes on warm cream"
   {...siteConfig}
 >
   <ul class="course-tags" aria-label="Course tags">
     {courseMeta.tags.map((tag) => <li>{tag}</li>)}
   </ul>
 
-  <!-- STARTER_CONTENT: replace the authored page below, then remove this comment. -->
   <h2>What you will do</h2>
   <p>
-    Say what a student spends their time on — the making, reading, arguing or
-    measuring that fills the weeks. Name the artefact they walk out with.
+    Every week you make something convincing, in one of four materials —
+    paint, prose, currency or code — and then find out exactly where it fails
+    to convince, in a studio built around that failure rather than around it.
+    You'll age a surface by hand and learn what a lab test would still catch,
+    copy a signature and watch its stroke rhythm give it away, and by the
+    final project write a full provenance file plausible enough to survive
+    questioning at a crit. You walk out with three finished pieces — a
+    convincing copy, a written case against a sample you didn't make, and an
+    object with a history built to match it — and a genuinely useful
+    reflex: checking what a claim of authenticity is actually resting on.
   </p>
 
   <h2>Who it is for</h2>
   <p>
-    Say who this is aimed at and what they need to already know. Be specific
-    enough that someone can rule themselves in or out without emailing you.
+    An elective for anyone who's sat through one semester of thinking
+    critically about a discipline and wants to turn that scepticism into a
+    hands-on craft. No prior studio, art-history or forensic background is
+    assumed — the materials are taught from scratch, on the bench, in week 1.
+    What the course does assume is patience for a slow craft skill and an
+    honest appetite for being told, in public, exactly where your fake didn't
+    hold up.
   </p>
 
   <h2>Where to go next</h2>

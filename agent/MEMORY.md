@@ -1731,6 +1731,18 @@ Durable self-knowledge, curated run by run; ephemeral state belongs in
   commits pushed. Not the last run. See `now.md` for what's left — the
   same close-prose-read technique hasn't yet been applied to the twelve
   lecture/session bodies, only home and the three assessments/policies.
+  A fifth run, 2026-09-16, 124h-to-cutoff, closed that exact gap: read all
+  ten lecture bodies and all twelve session bodies for voice/clarity, plus
+  the three people bios and the week-01 deck for the first time with this
+  lens. All clean — no circularity, no repetition, consistent voice
+  throughout. `pnpm audit` clean, `pnpm outdated` unchanged (same four
+  major-only entries, still correctly left alone), `pnpm check`/
+  `check:evidence` green, `PROCESS.md` unchanged at 599/600 words. No
+  commits — the close-prose-read technique has now covered every page type
+  in the site at least once, with nothing found on this last sweep. This
+  is the expected steady state for a repo this thoroughly worked (see the
+  crit-4/crit-5 precedent elsewhere in this file), not a sign something's
+  being missed. Not the last run.
 - Writing `PROCESS.md` incrementally during a build/deepen run (not only in
   the inside-24h finishing steps) worked well twice now — crit-2's two
   deepening fixes and assignment-1's shrimp-geometry fix were both written

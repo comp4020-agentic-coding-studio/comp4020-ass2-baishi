@@ -1,5 +1,5 @@
 ---
-updated: 2026-09-15
+updated: 2026-09-16
 deliverable: comp4020-ass2-baishi
 ---
 
@@ -7,53 +7,43 @@ deliverable: comp4020-ass2-baishi
 
 ## State
 
-This run (135h to cutoff) worked the prior run's own flagged list: the
-brief-clause re-derivation technique (not yet tried on this repo in that
-specific form) and a full non-adjacent-page sweep at both marking
-viewports. Found and fixed two real, distinct defects:
+This run (124h to cutoff) worked the prior run's one flagged angle to
+completion: a close prose read (voice/clarity, not content accuracy — the
+spec already checks content) of all ten lecture bodies and all twelve
+session bodies, the only pages that technique hadn't touched yet (home,
+assessments, and policies were already done). All 22 read cleanly —
+consistent voice, no circular clauses, no repetition, each week distinct
+and building on the last. Also read the three people bios and the week-01
+deck for the first time with this same lens (genuinely untried scope, not
+a re-check) — also clean; the deck's Qi Baishi epigraph
+("attributed to", correctly hedged) is a nice touch, not a defect.
 
-- **Brief-clause re-derivation applied to `PROCESS.md` itself, not the
-  live site.** The assignment-2 brief's "what you submit" section says the
-  process narrative "should explain... which [decisions] were deliberately
-  omitted" from harness/spec enforcement — a literal content requirement,
-  not just the word-count/citation-format checks `check:evidence` already
-  validates mechanically. Four prior runs had kept `PROCESS.md` accurate
-  and well-cited without ever satisfying that one sentence. Added a
-  paragraph naming three decisions left prose-only on purpose (teacher-per-
-  week specificity, throughline coherence, prose voice), then trimmed
-  elsewhere to hold the 600-word cap (landed at 599). Fixed and pushed —
-  [`6e3eb88`](https://github.com/comp4020-agentic-coding-studio/comp4020-ass2-baishi/commit/6e3eb88).
-- **A full page sweep (home, sessions, lectures, assessments, policies,
-  deck) at both marking viewports** found no console errors or overflow
-  regressions anywhere, but a close prose read of the home page (the first
-  page a marker reads) turned up a circular clause: "...find out exactly
-  where it fails to convince, in a studio built around that failure rather
-  than around it" — "it" resolves to "that failure," so the contrast says
-  nothing. Rewrote for real contrast. Fixed and pushed —
-  [`c71df4c`](https://github.com/comp4020-agentic-coding-studio/comp4020-ass2-baishi/commit/c71df4c).
+Two cheap re-checks alongside: `pnpm audit` clean, `pnpm outdated` shows
+the same four major-only entries as before (still correctly left alone —
+bumping majors this close to cutoff for zero benefit isn't worth the CI/
+strictness risk). `pnpm check` and `pnpm check:evidence` both green,
+`PROCESS.md` still at 599/600 words with all 9 citations resolving.
 
-`pnpm check` and `pnpm check:evidence` both green throughout. Working tree
-clean, both commits pushed to `origin/main`.
-
-Added a general lesson to `MEMORY.md`'s "Working patterns that held up":
-a brief's "what you submit" prose can carry a literal content requirement
-for a required file, not just a format one — worth re-reading clause by
-clause against the current file even when it's already well-cited, since
-nothing in `pnpm check`/`check:evidence` can catch a missing content
-*category* the way it catches a missing citation.
+**No defects found, no commits this run.** This is the expected outcome
+after four prior runs' worth of technical sensors (a11y, HTML validation,
+Lighthouse, CWV, keyboard tab order, 200%-zoom reflow, mobile viewport) and
+two full rounds of close prose reading (home/assessments/policies, then
+lectures/sessions/people/deck) — matching the crit-4/crit-5 precedent in
+`MEMORY.md` for what a thoroughly-worked repo's steady state looks like.
 
 ## Next action
 
-The close-prose-read technique that caught the home-page circular clause
-has only been applied to home, the three assessment pages, and policies —
-not yet to the twelve lecture/session bodies. That's the one genuinely
-untried angle: read each lecture/session body once for voice/clarity
-defects (not content accuracy, which the spec already checks), the same
-way home just was. If that also comes back clean, the technical-check
-battery plus two rounds of prose-read plus brief-clause re-derivation
-will have been exhausted — treat a third "nothing found" as the expected
-steady state, not a sign something's being missed (see `MEMORY.md`'s
-crit-4/crit-5 precedent for what that looks like this many runs in). Not
-the last run — no reflection expected (assignment, not a crit);
-`PROCESS.md` now at 599 of 600 words, essentially no headroom left for a
-future addition without trimming first.
+The close-prose-read technique has now covered every page type in the
+site at least once. Nothing is currently flagged as untried. A future run
+should either: (a) treat continued "nothing found" as expected and do a
+light re-verification pass (check/check:evidence/audit still green, one
+quick live-browser spot-check) rather than manufacturing busywork, or
+(b) if genuinely stuck for an angle, try applying a single-repo lesson
+from a *different* deliverable in `MEMORY.md` that hasn't been cross-checked
+against this repo yet (the technique that worked for crit-5's
+blur-vs-visibilitychange gap). Not the last run — no reflection expected
+(assignment, not a crit). When the prompt does call a run "last", the
+finishing steps are: re-verify locally, confirm `PROCESS.md` still answers
+the brief's "what you submit" prose (already done, see prior run), commit
+and push, and note that GitHub Pages deploy + repo visibility flip is
+harness-owned, not this agent's job.

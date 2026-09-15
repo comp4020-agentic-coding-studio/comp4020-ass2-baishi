@@ -7,52 +7,53 @@ deliverable: comp4020-ass2-baishi
 
 ## State
 
-This run (141h to cutoff) worked the exact three-item list the prior run's
-`now.md` flagged, and all three came back clean — no code change, no commit:
+This run (135h to cutoff) worked the prior run's own flagged list: the
+brief-clause re-derivation technique (not yet tried on this repo in that
+specific form) and a full non-adjacent-page sweep at both marking
+viewports. Found and fixed two real, distinct defects:
 
-- `pnpm audit`: no known vulnerabilities. `pnpm outdated`: same four entries
-  as before (`@astrojs/mdx`, `@types/node`, `typescript`, `vitest`), all
-  major-only bumps — correctly left alone, matching established policy.
-- Lighthouse re-run against the built site (base path is
-  `/comp4020-ass2-baishi/`, derived from the origin remote — hitting bare
-  `/` under `pnpm preview` 404s silently with a 200 status, since Astro
-  serves `404.html` as the body; always resolve the real base from
-  `dist/index.html`'s hrefs before pointing Lighthouse or `curl` at a local
-  preview). All five categories scored 1.0 — confirms the prior run's hero
-  AVIF darkening (for the AA contrast fix) didn't regress performance/
-  best-practices/SEO.
-- `prefers-reduced-motion`: grepped this course's own `src/` (not
-  `node_modules`) for `animation`/`transition`/`@keyframes` — zero matches.
-  The only two custom stylesheets in the repo
-  (`src/decks/theme.css`, `src/styles/card-title-contrast.css`) are a
-  deck-CSS import with no rules of its own and a one-line colour override.
-  Nothing to check here, confirmed rather than assumed — a legitimate
-  "N/A" outcome, not a gap.
+- **Brief-clause re-derivation applied to `PROCESS.md` itself, not the
+  live site.** The assignment-2 brief's "what you submit" section says the
+  process narrative "should explain... which [decisions] were deliberately
+  omitted" from harness/spec enforcement — a literal content requirement,
+  not just the word-count/citation-format checks `check:evidence` already
+  validates mechanically. Four prior runs had kept `PROCESS.md` accurate
+  and well-cited without ever satisfying that one sentence. Added a
+  paragraph naming three decisions left prose-only on purpose (teacher-per-
+  week specificity, throughline coherence, prose voice), then trimmed
+  elsewhere to hold the 600-word cap (landed at 599). Fixed and pushed —
+  [`6e3eb88`](https://github.com/comp4020-agentic-coding-studio/comp4020-ass2-baishi/commit/6e3eb88).
+- **A full page sweep (home, sessions, lectures, assessments, policies,
+  deck) at both marking viewports** found no console errors or overflow
+  regressions anywhere, but a close prose read of the home page (the first
+  page a marker reads) turned up a circular clause: "...find out exactly
+  where it fails to convince, in a studio built around that failure rather
+  than around it" — "it" resolves to "that failure," so the contrast says
+  nothing. Rewrote for real contrast. Fixed and pushed —
+  [`c71df4c`](https://github.com/comp4020-agentic-coding-studio/comp4020-ass2-baishi/commit/c71df4c).
 
-Also did a fresh live-browser pass as a marker actually would: home page at
-both marking viewports (1920×1080, 390×844) screenshotted — hero title
-reads cleanly at both, matching the contrast fix — plus a non-adjacent
-lecture page and the week-01 deck, both console-clean. No new defects.
+`pnpm check` and `pnpm check:evidence` both green throughout. Working tree
+clean, both commits pushed to `origin/main`.
 
-`pnpm check` green (6 tests) at the start. Nothing changed this run, so
-nothing to push — working tree was already clean before and after.
+Added a general lesson to `MEMORY.md`'s "Working patterns that held up":
+a brief's "what you submit" prose can carry a literal content requirement
+for a required file, not just a format one — worth re-reading clause by
+clause against the current file even when it's already well-cited, since
+nothing in `pnpm check`/`check:evidence` can catch a missing content
+*category* the way it catches a missing citation.
 
 ## Next action
 
-The technical-check battery for this repo (contrast, keyboard tab-order,
-zoom, mobile viewport, audit/outdated, Lighthouse, reduced-motion,
-copy-vs-behaviour) has now been run at least once each and every item
-either found something real (already fixed) or came back genuinely clean.
-This reads as the "battery exhausted" state doctrine's own lesson warns
-against manufacturing busywork for — don't invent a fix to have a diff.
-Worth trying on a future run before assuming there's truly nothing left:
-(1) re-read the brief's own prose one clause at a time against the live
-site's actual content, the technique that kept finding real bugs on
-crit-4/crit-5 well after their sensor batteries went dry (see `MEMORY.md`'s
-brief-clause-re-derivation entries) — not yet tried on this repo in that
-specific form; (2) a full non-adjacent-page sweep matching the rubric's own
-described marker behaviour (home, several non-adjacent weeks, an
-assessment, the deck, policies) at both viewports, since this run only
-sampled two pages beyond home. Not the last run — no reflection expected
-(assignment, not a crit); `PROCESS.md` still accurate at 9 cited commits,
-no update needed.
+The close-prose-read technique that caught the home-page circular clause
+has only been applied to home, the three assessment pages, and policies —
+not yet to the twelve lecture/session bodies. That's the one genuinely
+untried angle: read each lecture/session body once for voice/clarity
+defects (not content accuracy, which the spec already checks), the same
+way home just was. If that also comes back clean, the technical-check
+battery plus two rounds of prose-read plus brief-clause re-derivation
+will have been exhausted — treat a third "nothing found" as the expected
+steady state, not a sign something's being missed (see `MEMORY.md`'s
+crit-4/crit-5 precedent for what that looks like this many runs in). Not
+the last run — no reflection expected (assignment, not a crit);
+`PROCESS.md` now at 599 of 600 words, essentially no headroom left for a
+future addition without trimming first.

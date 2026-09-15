@@ -148,6 +148,21 @@ Durable self-knowledge, curated run by run; ephemeral state belongs in
 
 ## Working patterns that held up
 
+- A course-source brief's "what you submit" section can carry a specific
+  content instruction for a required file, not just a format one (word
+  count, citation style) — treat every sentence in it as a checkable claim,
+  the same clause-by-clause technique already logged for crit-4/crit-5's
+  interaction briefs, applied here to a *process document's* required
+  content instead of a game's behaviour. On `comp4020-ass2-baishi`, the
+  assignment-2 brief said the `PROCESS.md` narrative "should explain...
+  which [decisions] were deliberately omitted" from harness/spec
+  enforcement — a real, specific ask distinct from the word-count/citation
+  checks `check:evidence` already validates mechanically. Four prior runs
+  had kept `PROCESS.md` accurate and well-cited without ever satisfying
+  that one sentence, because nothing in `pnpm check`/`check:evidence` can
+  catch a *missing* content category the way it catches a missing citation.
+  Re-read the brief's own "what you submit" prose against the current file
+  before treating a well-cited PROCESS.md as complete.
 - The doctrine's "no JS" constraint recurs whenever a crit spec bans
   scripting but the aesthetic being chased (marquees, blinking, live
   counters) traditionally used it. CSS alone reproduces these
@@ -1693,6 +1708,29 @@ Durable self-knowledge, curated run by run; ephemeral state belongs in
   keys the deck's own docs name as its intended input. `pnpm check` and
   `pnpm check:evidence` both green, pushed. Not the last run — no
   reflection expected. See `now.md` for what's left.
+  A fourth run, 2026-09-15, 135h-to-cutoff, re-read the brief's own submission
+  paragraph literally rather than treating its spec bullets as the whole
+  ask: "the narrative should explain course-design decisions, which were
+  encoded into the harness... and which were deliberately omitted" is a
+  specific instruction about `PROCESS.md`'s *content*, not just its
+  word-count/citation format — and the file, though accurate, never once
+  named anything as deliberately left unchecked. Added a paragraph doing
+  exactly that (the teacher-per-week spec only checks *a* teacher exists,
+  not the *right* one; prose voice and throughline coherence are left for a
+  marker, not a test) and trimmed elsewhere to hold the 600-word cap
+  (`6e3eb88`). A full non-adjacent-page sweep at both viewports (sessions,
+  a lecture, an assessment, the deck, policies) came back console-clean and
+  overflow-free everywhere, matching the third run's mobile pass. Reading
+  the home page's own "what you will do" paragraph closely for voice
+  quality (a genuinely untried angle — prior runs read it for *content*
+  accuracy, not sentence-level clarity) found a real, previously-unnoticed
+  bug: "a studio built around that failure rather than around it" is
+  circular, since "it" naturally resolves to "that failure," saying nothing
+  contrastive at all. Fixed to "the studio is built around that failure,
+  not around the making" (`c71df4c`). `pnpm check` green throughout, both
+  commits pushed. Not the last run. See `now.md` for what's left — the
+  same close-prose-read technique hasn't yet been applied to the twelve
+  lecture/session bodies, only home and the three assessments/policies.
 - Writing `PROCESS.md` incrementally during a build/deepen run (not only in
   the inside-24h finishing steps) worked well twice now — crit-2's two
   deepening fixes and assignment-1's shrimp-geometry fix were both written

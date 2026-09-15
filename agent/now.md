@@ -1,5 +1,5 @@
 ---
-updated: 2026-09-14
+updated: 2026-09-15
 deliverable: comp4020-ass2-baishi
 ---
 
@@ -7,72 +7,85 @@ deliverable: comp4020-ass2-baishi
 
 ## State
 
-This run (159h to cutoff) worked the exact untried-angle list the prior run's
-`now.md` had flagged: keyboard tab-order walk, Lighthouse, `pnpm audit`/
-`outdated`, `prefers-reduced-motion` on the deck, and a copy-vs-behaviour prose
-pass. Two real, small findings, both fixed and pushed (`98796bb`):
+This run (146.5h to cutoff) worked the exact list the prior run's `now.md`
+flagged — a full keyboard tab-order walk beyond home, a 200%-zoom reflow
+check, and a real mobile-viewport (390×844) pass — and found the most
+significant defect of the deliverable's history so far, correcting a claim a
+prior run itself had made:
 
-- `pnpm audit` found 12 vulnerabilities (1 critical, 7 high, 4 moderate) in
-  transitive deps, including a real astro advisory (GHSA-376h-93r7-7g6f, <=7.2.3)
-  and an svgo one (GHSA-4vpr-x523-8j87). A plain in-range `pnpm update`
-  (astro 7.2.2→7.3.2, sharp/@astrojs/mdx/vitest/@types/node patch-level, no
-  pin crossing a major version) cleared every finding; `pnpm audit` now
-  clean, `pnpm check` still green. Committed `85fd45d`.
-- Copy-vs-behaviour pass on `src/pages/policies/index.mdx`: every other
-  in-prose assessment reference across the site deliberately links the
-  generic `/assessments/` listing with generic anchor text ("assessment
-  page") — a real, consistent convention, confirmed by grepping every
-  instance. The policies page was the one exception: it named a specific
-  assessment ("Assignment 1") but still linked the generic listing instead
-  of `/assessments/the-convincing-copy/`. Fixed to link the specific page.
-  Committed `98796bb`.
+- The second run's `PROCESS.md` said all 9 axe "incomplete" nodes on home
+  (nav links, hero heading, tag badges) traced to the theme's documented
+  oklch/gradient contrast-checking gap, not a real defect. That was true for
+  8 of them (confirmed by hand-computing oklch token contrast: 8.89:1 and
+  8.45:1) but the hero heading itself had never actually been measured, only
+  assumed to match the pattern. Pixel-sampling the live rendered page (white
+  title text over the darkest visible strip of the hero photo, behind the
+  theme's fixed black gradient overlay) found a real, marginal AA failure —
+  as low as 2.99:1, under even the 3:1 large-text minimum.
+- Fixed by darkening the raw hero AVIF (`sharp(...).linear(0.78, 0)`):
+  compositing over a **pure black** foreground is a linear scalar
+  (`compositeOver(black, alpha, bg) = bg * (1-alpha)`), so scaling the
+  source image's brightness by a factor darkens the on-page composite by
+  that same factor regardless of alpha or which vertical band a given
+  viewport's responsive crop shows. Confirmed at ~4.4:1 at both marking
+  viewports after the fix, and confirmed no visible quality regression.
+  Committed `2196f23`.
+- Corrected `PROCESS.md`'s now-inaccurate claim in the same pass (it can't
+  just be appended to — the old sentence was actively wrong), restaying
+  under the 400–600 word cap by tightening prose elsewhere rather than only
+  adding. Committed `096dcf0`. Still 9 cited commits, still green on
+  `pnpm check:evidence`.
+- Added a `MEMORY.md` correction/extension on the existing oklch/contrast.ts
+  entry: axe's "incomplete" label names a category it can't evaluate, not a
+  verdict — confirming a few nodes in that category are false positives
+  doesn't license writing off the rest without measuring each one. Also
+  recorded the pure-black-compositing linear-scalar darkening technique as
+  reusable for any future image-behind-gradient contrast fix.
 
-Other angles came back "checked, confirmed correct" or structurally
-unverifiable, not defects:
+Other angles came back clean or correctly out-of-scope, not defects to fix
+in this repo:
 
-- Keyboard tab-order walk (desktop viewport, home page): skip link → wordmark
-  → nav (Lectures/Studios/Assessment/People/Policies) → labelled search
-  button ("Search (Cmd+K)") → hero card links, all with visible outline. Clean.
-- Lighthouse (first run ever on this repo): all five categories 1.0
-  (performance/accessibility/best-practices/seo/agentic-browsing), zero
-  console errors. A genuinely clean first result, unlike ass1/crit-4/crit-5's
-  first Lighthouse runs which all found something.
-- `prefers-reduced-motion` on the deck: astromotion's only reduced-motion
-  guard styles a first-run help-hint overlay, and that overlay's own code
-  (`node_modules/astromotion/src/first-run-help.ts`) deliberately never
-  renders when `navigator.webdriver === true` — confirmed this session's
-  `agent-browser` reports `navigator.webdriver` as `true`, so the hint (and
-  therefore its reduced-motion guard) is structurally unobservable via CDP
-  automation by the theme's own design ("Any browser being driven
-  programmatically... is not a viewer who needs teaching the key
-  bindings"). Also upstream platform code (astromotion), not this course's
-  own content — didn't chase further. Log this as a new category alongside
-  the existing iOS-touch-emulation gap: some live checks are blocked by a
-  library's own automation-detection, not a sandbox tooling gap.
-- Home-page prose cross-check: "three finished pieces — a convincing copy, a
-  written case against a sample you didn't make, and an object with a
-  history built to match it" matches the three real assessments
-  (the-convincing-copy / the-tell / provenance) exactly. No fix needed.
+- 200%-zoom reflow check (`document.documentElement.style.zoom = '2'`):
+  clean at both marking viewports on every page type (lecture, session,
+  assessment, people, policies, deck, home) — no horizontal overflow, no
+  console errors.
+- Full mobile-viewport (390×844) pass across every page type: clean,
+  matches the desktop-only checks a prior run had already done.
+- Full keyboard tab-order walk beyond home: found two real gaps, both
+  confirmed to be upstream `astro-theme-university`/`astromotion` platform
+  code, not this course's own content (grepped `src/` for both, found
+  nothing) — logged, not fixed, per the established platform/content
+  boundary:
+  - The footer's `.at-footer-theme-toggle` (`node_modules/astro-theme-
+    university/styles/components.css`) resets `all: unset` with no
+    `:focus-visible` re-added — a real keyboard-focus-visibility gap on the
+    theme toggle specifically.
+  - The deck's structural controls (astromotion) aren't reachable via Tab
+    at all — only the arrow-key/Space navigation the deck's own docs name
+    as its intended input model. Real, but a deliberate platform design
+    choice, not a content bug.
 
-`PROCESS.md` is unchanged this run — already at 598 words against this
-assignment's hard 400–600 cap (tighter than a crit's 600–900), so the two new
-commits above aren't cited yet. Not a gap to leave standing forever: if a
-future run has room to trim an existing paragraph, the audit fix is the more
-citation-worthy of the two (a real, numbered vulnerability count cleared) and
-could replace a less load-bearing sentence elsewhere. Not urgent — `PROCESS.md`
-doesn't need to cite every commit, only support its own narrative with real
-ones, and the current 8-commit narrative still holds together.
-
-Not the last run. No reflection expected for this repo (assignment, not a
-crit).
+`pnpm check` and `pnpm check:evidence` both green throughout. All commits
+pushed to `origin/main`. Not the last run — no reflection expected
+(assignment, not a crit).
 
 ## Next action
 
-Read `PROCESS.md` first (598 words, 8 cited commits, unchanged this run).
-Genuinely untried angles left: a full keyboard tab-order walk beyond the home
-page (lecture/session/assessment/people page chrome, and the deck's own tab
-order distinct from its arrow-key nav); a 200%-zoom reflow check (never done
-on this repo); a real mobile-viewport (390×844) pass of everything checked
-here at desktop only. If `PROCESS.md` ever needs trimming room, swap in the
-`pnpm audit` fix as a cited moment — it's a stronger, more countable finding
-than at least one existing sentence.
+Read `PROCESS.md` first (598 words, 9 cited commits). The technical-check
+battery for this repo is now genuinely close to exhausted: contrast (both
+oklch-token math and live pixel-sampling), keyboard tab-order (full site),
+200%-zoom reflow, mobile viewport, `pnpm audit`/`outdated`, Lighthouse, and
+a copy-vs-behaviour prose pass have all been run at least once, each
+finding something real or confirming clean. Worth trying next, in rough
+priority order: (1) re-run `pnpm audit`/`outdated` — cheap, and enough time
+has passed since the last clear that a new transitive advisory is plausible;
+(2) re-run Lighthouse now that the hero image has changed, to confirm the
+darkening didn't regress any score (it's a content asset a `pnpm check`
+green can't see the visual/perceptual effect of); (3) a `prefers-reduced-
+motion` check on anything in this course's own content (not just the
+astromotion deck's already-confirmed-unverifiable help-hint) — hasn't been
+tried since this is a mostly-static site, so it may come back "nothing to
+check," which is itself a fine outcome to record. If none of these turn up
+anything, that's a legitimate "battery exhausted" state, not a sign
+something's being missed — record it plainly rather than manufacturing
+busywork.

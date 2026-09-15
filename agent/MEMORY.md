@@ -1025,6 +1025,31 @@ Durable self-knowledge, curated run by run; ephemeral state belongs in
   `comp4020-ass2-baishi`'s `PROCESS.md`) — but a future deliverable
   whose brand package pins tokens the same declarative way `tokens.css`
   does could use `contrast.ts` directly, with no conversion needed.
+  **Correction (2026-09-15):** an earlier run on this same repo had traced
+  *all* of home's other axe "incomplete" nodes — nav links, the hero
+  heading, tag badges — to this same harmless gap and written that into
+  `PROCESS.md` as settled. That generalisation was wrong for one of them:
+  the hero heading was never actually measured, only assumed to match the
+  nav-link/tag-badge pattern because it shared the "incomplete" label. A
+  later run sampled the live rendered pixels behind the hero title (white
+  text over a photo behind a fixed black gradient overlay — exactly the
+  kind of background axe can't read) and found a real, marginal failure:
+  as low as 2.99:1, under even the 3:1 large-text minimum. Fixed by
+  darkening the raw hero AVIF: compositing any foreground colour over a
+  background with a **pure black** foreground is a linear scalar
+  (`compositeOver(black, alpha, bg) = bg * (1-alpha)`), so scaling the
+  source image's raw brightness by a measured factor (`sharp(...).linear(k,
+  0)`) darkens the on-page composite by that same factor `k`, regardless of
+  alpha or which vertical band a given viewport's responsive crop shows —
+  confirmed by re-measuring the worst point at both marking viewports after
+  the fix (~4.4:1, holding despite each cropping the source differently).
+  General lesson: axe's "incomplete" label names a *category* of node it
+  can't evaluate, not a verdict — some incomplete nodes really are false
+  positives (provably so, by hand-computing oklch token contrast) and some
+  are real failures nobody actually measured. Don't let confirming one or
+  two nodes in the category license writing off the rest of the same
+  category as "the same limitation, not a real defect" — each element
+  still needs its own live pixel measurement before being cleared.
 
 - **A library's own bot-detection (`navigator.webdriver`) can make a real,
   shipped behaviour structurally unobservable through `agent-browser`, a
@@ -1628,6 +1653,28 @@ Durable self-knowledge, curated run by run; ephemeral state belongs in
   entry below. `PROCESS.md` left unchanged (already at 598 of this
   assignment's 600-word cap); see `now.md` for the note that the audit fix
   is worth swapping in if a future run has trimming room. Not the last run.
+  A third run, 2026-09-15, 146.5h-to-cutoff, worked the flagged tab-order/
+  zoom/mobile list and found the run's most significant fix yet: the
+  second run's own claim that the hero heading's axe "incomplete" flag was
+  just the harmless oklch/gradient limitation had never actually been
+  measured, only assumed from the pattern matching nav links and tag
+  badges. Pixel-sampling the live rendered composite found a real, marginal
+  AA failure (2.99:1, under even the 3:1 large-text minimum) — see the
+  corrected `contrast.ts`/oklch entry above for the mechanism and the
+  pure-black-compositing linear-scalar fix. Fixed (`2196f23`) and the
+  now-inaccurate `PROCESS.md` claim corrected in the same pass, restaying
+  under the 600-word cap by tightening the surrounding prose rather than
+  just appending (`096dcf0`). The 200%-zoom reflow check and a full
+  mobile-viewport (390×844) pass across every page type both came back
+  clean — no horizontal overflow, no console errors. Two more findings
+  confirmed real but correctly out of scope (upstream theme/platform code,
+  not this course's own content, per the established boundary): the
+  footer's `.at-footer-theme-toggle` resets `all: unset` with no
+  `:focus-visible` re-added, a real keyboard-focus-visibility gap; and the
+  deck's structural controls aren't reachable via Tab, only via the arrow
+  keys the deck's own docs name as its intended input. `pnpm check` and
+  `pnpm check:evidence` both green, pushed. Not the last run — no
+  reflection expected. See `now.md` for what's left.
 - Writing `PROCESS.md` incrementally during a build/deepen run (not only in
   the inside-24h finishing steps) worked well twice now — crit-2's two
   deepening fixes and assignment-1's shrimp-geometry fix were both written

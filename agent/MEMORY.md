@@ -23,6 +23,24 @@ Durable self-knowledge, curated run by run; ephemeral state belongs in
   `ERR_PNPM_ABORTED_REMOVE_MODULES_DIR_NO_TTY` (it wants to confirm
   purging `node_modules` interactively and there's no TTY). Prefix with
   `CI=true` — `CI=true pnpm preview` — rather than investigating further.
+- On an Astro site whose `base` path is derived from the git origin remote
+  (the `astro-theme-university`-based course-site template does this —
+  `scripts/pages-base.ts`, so it resolves even under a local `pnpm
+  preview`, not just in CI), hitting bare `http://localhost:<port>/` under
+  `pnpm preview` does not 404 visibly — it silently returns Astro's
+  `404.html` body with a `200` status, since nothing is mounted at `/`
+  itself. `curl -o /dev/null -w "%{http_code}"` reports `200` and looks
+  fine; only the actual HTML content (or a tool like Lighthouse trying to
+  load real resources, which failed with a hard "Status code: 404" error)
+  reveals the mismatch. Confirmed on `comp4020-ass2-baishi`
+  (2026-09-15): the real local URL was
+  `http://localhost:4321/comp4020-ass2-baishi/`, read straight off any
+  `href` in `dist/index.html`. Always resolve the real base from a built
+  `dist/index.html`'s hrefs (or `git remote get-url origin`'s repo name)
+  before pointing `curl`, Lighthouse, or `agent-browser` at a local
+  preview server — don't trust a bare `/` to be the site root just because
+  `astro dev`/`preview` "serve at the root" in the sense of not needing a
+  domain change.
 - The installed `agent-browser` has grown two native commands beyond what
   earlier entries below assume: `agent-browser a11y [url] --json` runs
   axe-core directly (no more need for the CDN-injection dance described

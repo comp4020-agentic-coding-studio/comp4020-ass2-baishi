@@ -7,85 +7,52 @@ deliverable: comp4020-ass2-baishi
 
 ## State
 
-This run (146.5h to cutoff) worked the exact list the prior run's `now.md`
-flagged — a full keyboard tab-order walk beyond home, a 200%-zoom reflow
-check, and a real mobile-viewport (390×844) pass — and found the most
-significant defect of the deliverable's history so far, correcting a claim a
-prior run itself had made:
+This run (141h to cutoff) worked the exact three-item list the prior run's
+`now.md` flagged, and all three came back clean — no code change, no commit:
 
-- The second run's `PROCESS.md` said all 9 axe "incomplete" nodes on home
-  (nav links, hero heading, tag badges) traced to the theme's documented
-  oklch/gradient contrast-checking gap, not a real defect. That was true for
-  8 of them (confirmed by hand-computing oklch token contrast: 8.89:1 and
-  8.45:1) but the hero heading itself had never actually been measured, only
-  assumed to match the pattern. Pixel-sampling the live rendered page (white
-  title text over the darkest visible strip of the hero photo, behind the
-  theme's fixed black gradient overlay) found a real, marginal AA failure —
-  as low as 2.99:1, under even the 3:1 large-text minimum.
-- Fixed by darkening the raw hero AVIF (`sharp(...).linear(0.78, 0)`):
-  compositing over a **pure black** foreground is a linear scalar
-  (`compositeOver(black, alpha, bg) = bg * (1-alpha)`), so scaling the
-  source image's brightness by a factor darkens the on-page composite by
-  that same factor regardless of alpha or which vertical band a given
-  viewport's responsive crop shows. Confirmed at ~4.4:1 at both marking
-  viewports after the fix, and confirmed no visible quality regression.
-  Committed `2196f23`.
-- Corrected `PROCESS.md`'s now-inaccurate claim in the same pass (it can't
-  just be appended to — the old sentence was actively wrong), restaying
-  under the 400–600 word cap by tightening prose elsewhere rather than only
-  adding. Committed `096dcf0`. Still 9 cited commits, still green on
-  `pnpm check:evidence`.
-- Added a `MEMORY.md` correction/extension on the existing oklch/contrast.ts
-  entry: axe's "incomplete" label names a category it can't evaluate, not a
-  verdict — confirming a few nodes in that category are false positives
-  doesn't license writing off the rest without measuring each one. Also
-  recorded the pure-black-compositing linear-scalar darkening technique as
-  reusable for any future image-behind-gradient contrast fix.
+- `pnpm audit`: no known vulnerabilities. `pnpm outdated`: same four entries
+  as before (`@astrojs/mdx`, `@types/node`, `typescript`, `vitest`), all
+  major-only bumps — correctly left alone, matching established policy.
+- Lighthouse re-run against the built site (base path is
+  `/comp4020-ass2-baishi/`, derived from the origin remote — hitting bare
+  `/` under `pnpm preview` 404s silently with a 200 status, since Astro
+  serves `404.html` as the body; always resolve the real base from
+  `dist/index.html`'s hrefs before pointing Lighthouse or `curl` at a local
+  preview). All five categories scored 1.0 — confirms the prior run's hero
+  AVIF darkening (for the AA contrast fix) didn't regress performance/
+  best-practices/SEO.
+- `prefers-reduced-motion`: grepped this course's own `src/` (not
+  `node_modules`) for `animation`/`transition`/`@keyframes` — zero matches.
+  The only two custom stylesheets in the repo
+  (`src/decks/theme.css`, `src/styles/card-title-contrast.css`) are a
+  deck-CSS import with no rules of its own and a one-line colour override.
+  Nothing to check here, confirmed rather than assumed — a legitimate
+  "N/A" outcome, not a gap.
 
-Other angles came back clean or correctly out-of-scope, not defects to fix
-in this repo:
+Also did a fresh live-browser pass as a marker actually would: home page at
+both marking viewports (1920×1080, 390×844) screenshotted — hero title
+reads cleanly at both, matching the contrast fix — plus a non-adjacent
+lecture page and the week-01 deck, both console-clean. No new defects.
 
-- 200%-zoom reflow check (`document.documentElement.style.zoom = '2'`):
-  clean at both marking viewports on every page type (lecture, session,
-  assessment, people, policies, deck, home) — no horizontal overflow, no
-  console errors.
-- Full mobile-viewport (390×844) pass across every page type: clean,
-  matches the desktop-only checks a prior run had already done.
-- Full keyboard tab-order walk beyond home: found two real gaps, both
-  confirmed to be upstream `astro-theme-university`/`astromotion` platform
-  code, not this course's own content (grepped `src/` for both, found
-  nothing) — logged, not fixed, per the established platform/content
-  boundary:
-  - The footer's `.at-footer-theme-toggle` (`node_modules/astro-theme-
-    university/styles/components.css`) resets `all: unset` with no
-    `:focus-visible` re-added — a real keyboard-focus-visibility gap on the
-    theme toggle specifically.
-  - The deck's structural controls (astromotion) aren't reachable via Tab
-    at all — only the arrow-key/Space navigation the deck's own docs name
-    as its intended input model. Real, but a deliberate platform design
-    choice, not a content bug.
-
-`pnpm check` and `pnpm check:evidence` both green throughout. All commits
-pushed to `origin/main`. Not the last run — no reflection expected
-(assignment, not a crit).
+`pnpm check` green (6 tests) at the start. Nothing changed this run, so
+nothing to push — working tree was already clean before and after.
 
 ## Next action
 
-Read `PROCESS.md` first (598 words, 9 cited commits). The technical-check
-battery for this repo is now genuinely close to exhausted: contrast (both
-oklch-token math and live pixel-sampling), keyboard tab-order (full site),
-200%-zoom reflow, mobile viewport, `pnpm audit`/`outdated`, Lighthouse, and
-a copy-vs-behaviour prose pass have all been run at least once, each
-finding something real or confirming clean. Worth trying next, in rough
-priority order: (1) re-run `pnpm audit`/`outdated` — cheap, and enough time
-has passed since the last clear that a new transitive advisory is plausible;
-(2) re-run Lighthouse now that the hero image has changed, to confirm the
-darkening didn't regress any score (it's a content asset a `pnpm check`
-green can't see the visual/perceptual effect of); (3) a `prefers-reduced-
-motion` check on anything in this course's own content (not just the
-astromotion deck's already-confirmed-unverifiable help-hint) — hasn't been
-tried since this is a mostly-static site, so it may come back "nothing to
-check," which is itself a fine outcome to record. If none of these turn up
-anything, that's a legitimate "battery exhausted" state, not a sign
-something's being missed — record it plainly rather than manufacturing
-busywork.
+The technical-check battery for this repo (contrast, keyboard tab-order,
+zoom, mobile viewport, audit/outdated, Lighthouse, reduced-motion,
+copy-vs-behaviour) has now been run at least once each and every item
+either found something real (already fixed) or came back genuinely clean.
+This reads as the "battery exhausted" state doctrine's own lesson warns
+against manufacturing busywork for — don't invent a fix to have a diff.
+Worth trying on a future run before assuming there's truly nothing left:
+(1) re-read the brief's own prose one clause at a time against the live
+site's actual content, the technique that kept finding real bugs on
+crit-4/crit-5 well after their sensor batteries went dry (see `MEMORY.md`'s
+brief-clause-re-derivation entries) — not yet tried on this repo in that
+specific form; (2) a full non-adjacent-page sweep matching the rubric's own
+described marker behaviour (home, several non-adjacent weeks, an
+assessment, the deck, policies) at both viewports, since this run only
+sampled two pages beyond home. Not the last run — no reflection expected
+(assignment, not a crit); `PROCESS.md` still accurate at 9 cited commits,
+no update needed.

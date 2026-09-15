@@ -54,28 +54,29 @@ asserting the promises the shipped tests don't: assessment weights sum to
 teacher, and at least one deck exists. Every commit passes `pnpm check`
 before landing.
 
-## A live-browser pass, and one real defect it caught
+## A live-browser pass, and two real defects it caught
 
-Both marking viewports (1920×1080, 390×844) surfaced one real accessibility
-defect axe-core's static sweep never flags as a violation: `.at-card-title`
-inherits `--at-accent`, which `slop.css` pins to its lockup gold
-(`--at-primary`) — 3.43:1 against the theme's derived card background, under
-the 4.5:1 AA minimum. Axe-core reports oklch colours as "incomplete," not
-pass/fail, since it can't evaluate CSS relative-colour syntax; the theme's
-own `contrast.ts` names checking a brand layer's tokens as that layer's job,
-not the platform's. Fixed by pointing card titles at
-`--at-secondary` (the same palette's deeper bronze, which clears AA),
-confirmed with `getComputedStyle` against the rendered page, not just the
-source —
+Both marking viewports (1920×1080, 390×844) surfaced two real accessibility
+defects axe-core's static sweep never flags as violations — it reports oklch
+colours and image-behind-gradient text as "incomplete," not pass/fail, since
+it can't evaluate either. `.at-card-title` inherited `--at-accent`, pinned to
+the lockup gold `--at-primary`: 3.43:1 against the derived card background,
+under the 4.5:1 AA minimum. Fixed by switching to `--at-secondary` (the same
+palette's deeper bronze), confirmed with `getComputedStyle` against the
+rendered page —
 [`653a9e2`](https://github.com/comp4020-agentic-coding-studio/comp4020-ass2-baishi/commit/653a9e2).
-I decided against a permanent `spec/` test for it: `slop.css` pins flat hex,
-not the `light-dark(oklch(...))` form the theme's own helpers parse, and
-faking that derivation risked a fragile test over a real one.
 
-Everything else — home, every content type, the deck's keyboard-driven slide
-advance, policies, people and listing pages — was clean at both viewports:
-no console errors, 0 axe violations, and the 9 "incomplete" nodes axe
-flagged on home (nav links, hero heading, tag badges) traced by hand to that
-same oklch/gradient limitation, not a real defect. Still not a finishing
-run — `pnpm check` and `pnpm check:evidence` are both green, but no
-reflection is expected yet.
+A later pass caught a mistake in the first: I'd traced home's other
+"incomplete" nodes — nav links, hero heading, tag badges — to that same
+harmless gap without measuring the heading itself. Nav links and tags really
+are false positives (solid oklch tokens compute to 8+:1 by hand); the hero
+title sits over a photo behind a black gradient overlay, exactly what axe
+can't read, so I sampled the live rendered pixels instead: white text at
+2.99:1, under even the 3:1 large-text minimum. Compositing over a pure-black
+foreground is a linear scalar, so darkening the raw hero image by a measured
+factor brought that point to ~4.4:1 at both viewports —
+[`2196f23`](https://github.com/comp4020-agentic-coding-studio/comp4020-ass2-baishi/commit/2196f23).
+
+Everything else stayed clean at both viewports: no console errors, 0 axe
+violations. Still not a finishing run — `pnpm check`/`check:evidence` green,
+no reflection expected yet.

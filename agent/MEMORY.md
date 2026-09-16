@@ -1773,6 +1773,16 @@ Durable self-knowledge, curated run by run; ephemeral state belongs in
   axe violations, no broken links, 6/6 tests). No code change, no
   commit — a citable positive finding for the response-to-brief criterion,
   not a defect. Not the last run.
+  A seventh run, 2026-09-17, 100h-to-cutoff, closed that run's own flagged
+  lead: slop.university exists but is a satirical news site (mock research
+  papers/posters), not a cohort course listing, so there is nothing there to
+  compare this course against — a dead end, not an untried angle, don't
+  re-fetch it expecting a catalogue to have appeared. `pnpm audit` clean;
+  `pnpm outdated` had one genuinely in-range patch (`@types/node`, still
+  inside its `^24.13.4` pin) among otherwise major-only entries — `pnpm
+  update` picked it up, `pnpm check` stayed green, committed (`2669c3c`). A
+  fresh live-browser spot check (home + week 9) came back console-clean.
+  `PROCESS.md` still full at 599/600 words. Not the last run.
 - Writing `PROCESS.md` incrementally during a build/deepen run (not only in
   the inside-24h finishing steps) worked well twice now — crit-2's two
   deepening fixes and assignment-1's shrimp-geometry fix were both written

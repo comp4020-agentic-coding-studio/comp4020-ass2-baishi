@@ -7,42 +7,50 @@ deliverable: comp4020-ass2-baishi
 
 ## State
 
-This run (117h to cutoff) found the repo already fully green from the prior
-run and did a light re-verification pass rather than manufacture busywork,
-per the prior run's own flagged option (a). `pnpm check`, `pnpm
-check:evidence`, and `pnpm audit` all clean; working tree already matched
-`origin/main` before this run started.
+This run (111h to cutoff) found the repo still fully green (`pnpm check`: 36
+pages, 0 axe violations, no broken links, 6/6 spec tests) and tried a
+genuinely new angle rather than repeat the exhausted technical-sensor/
+prose-reread battery: fetched the brief's own three named exemplars —
+[Calling Bullshit](https://callingbullshit.org/),
+[Fab](https://fab.cba.mit.edu/classes/863.25/), and
+[CS007](https://cs007.blog/) — and compared their structure/register/
+throughline-technique directly against SLOP2474 (matching the working
+pattern already logged for assignment-1's Ciechanowski comparison, but never
+previously done for this specific assignment's own named exemplars).
 
-Tried the prior run's flagged option (b) too: checked whether the crit-4/
-crit-5 CSS-property-literacy lens (tap-highlight-color, touch-action scope,
-forced-colors border-loss, touch-callout/user-select — all from sustained-
-touch/custom-shaped-control findings on Drift and Two-Tone) has anything to
-apply to here. It doesn't: grepped every course-owned `.astro`/`.css`/`.ts`
-file for custom interactive markup and found only plain `<a>` links
-(TeachingTeam, lecture slide links, people mailto/url links) — no sustained
-touch/drag surface and no control shaped by background/box-shadow instead
-of a border. That lens is specific to game/instrument-style interaction
-surfaces this static content site doesn't have. A real "checked, doesn't
-apply" outcome, not a gap.
+The comparison came back as a strong positive, not a defect: SLOP2474
+already has Calling Bullshit's move (a single governing metaphor —
+copy-vs-forgery's "missing paper," the note — defined precisely in week 1
+and then applied across every material) and, distinctively, does something
+neither exemplar does as explicitly — **live cross-week callbacks inside the
+lecture prose itself**. Read week-09.md and week-10.md fresh: week 9's
+synthetic-media lecture explicitly says "that's the same asymmetry from
+week 2's connoisseurship lecture," and week 10 says detection "works the way
+week 3's materials science worked for paintings" and that the arms race
+"from week 6's banknotes runs here too." This is a concrete, checkable
+instance of "one idea carried all the way through a semester" that a marker
+reading two non-adjacent weeks (per the assessment's own ten-minute reading
+protocol) would actually notice. No code change — this is a verification
+finding, recorded because it's genuine evidence for the "response to the
+brief" criterion, not busywork.
 
-Did a real live-browser pass against a fresh `pnpm preview`: home (desktop
-1920×1080) and a non-adjacent session page (mobile 390×844, zero horizontal
-overflow) and a lecture page with a real deck link (week-01, desktop) all
-console-clean. Server shut down afterwards (confirmed via `ss -ltnp`, not
-a process-name grep — see the pgrep-false-positive lesson in `MEMORY.md`).
-
-**No defects found, no commits this run.**
+`PROCESS.md` is already at 599/600 words with no room to add this without
+cutting something else — left as-is; it already cites the throughline
+decision generally, just not this specific cross-reference evidence.
 
 ## Next action
 
-Nothing is currently flagged as untried. A future run should keep doing
-light re-verification (check/check:evidence/audit green, one live-browser
-spot-check on a fresh page combination) rather than manufacturing busywork
-— this is now the fifth-plus run in a row finding a genuinely clean repo,
-matching the crit-4/crit-5 precedent for what a thoroughly-worked
-deliverable's steady state looks like. Not the last run — no reflection
-expected (assignment, not a crit). When the prompt does call a run "last",
-the finishing steps are: re-verify locally, confirm `PROCESS.md` still
-answers the brief's "what you submit" prose (already done, see prior
-runs), commit and push, and note that GitHub Pages deploy + repo
-visibility flip is harness-owned, not this agent's job.
+Nothing currently flagged as untried on the technical side — this is now a
+sixth-plus run finding a clean repo. The exemplar-comparison technique used
+this run is worth remembering as a category distinct from "checked, nothing
+to fix": it's how a run can still produce genuine, citable evidence for the
+*response-to-brief* criterion (not just correctness) even after every
+automated check is dry. A future run could extend it by fetching the actual
+[SlopU programs and courses page](https://slop.university) (once it exists)
+to see how this course reads next to the rest of the cohort's submissions —
+not yet tried, and not guaranteed to exist yet this far from the cutoff.
+Not the last run — no reflection expected (assignment, not a crit). When the
+prompt does call a run "last": re-verify locally, confirm `PROCESS.md` still
+answers the brief's "what you submit" prose (already done, see prior runs),
+commit and push, and note that GitHub Pages deploy + repo visibility flip is
+harness-owned, not this agent's job.

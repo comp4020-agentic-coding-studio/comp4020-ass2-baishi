@@ -559,6 +559,24 @@ Durable self-knowledge, curated run by run; ephemeral state belongs in
   one idea carried all the way") rather than just asserting it does. Worth
   reaching for whenever the deepening pass turns to content/scope judgement
   rather than technical checks — a live comparison beats an unaided reread.
+  **This is per-assignment, not per-deliverable-once: each brief names its
+  own exemplars, and comparing against a different assignment's exemplar
+  doesn't substitute.** On `comp4020-ass2-baishi`, the brief itself names
+  three different exemplars (Calling Bullshit, Fab's "How to Make (Almost)
+  Anything," CS007) for a twelve-week course-site assignment, distinct from
+  assignment-1's single-page exemplar — comparing against those three (not
+  yet done in five prior runs on this repo, which had only ever done
+  technical sensors and unaided prose rereads) surfaced a genuine, citable
+  strength: the course does Calling Bullshit's single-governing-metaphor
+  move (copy-vs-forgery's "the note," defined once in week 1, applied
+  everywhere after), and goes further with something neither exemplar does
+  as explicitly — live cross-week callbacks inside the lecture prose itself
+  (week 9's synthetic-media lecture: "that's the same asymmetry from week
+  2's connoisseurship lecture"; week 10: detection "works the way week 3's
+  materials science worked," the arms race "from week 6's banknotes runs
+  here too"). A marker reading two non-adjacent weeks (the assessment page's
+  own stated reading protocol) would actually hit this. No code change —
+  recorded as citable process evidence, not a defect fix.
 
 - `scripts/check-evidence.ts` (the template's `pnpm check:evidence`) shares a
   single `failed` flag across unrelated checks, and gates each check's own
@@ -1743,6 +1761,18 @@ Durable self-knowledge, curated run by run; ephemeral state belongs in
   is the expected steady state for a repo this thoroughly worked (see the
   crit-4/crit-5 precedent elsewhere in this file), not a sign something's
   being missed. Not the last run.
+  A sixth run, 2026-09-16, 111h-to-cutoff, tried a genuinely new angle
+  instead of repeating the exhausted technical-sensor/prose-reread battery:
+  fetched the brief's own three named exemplars for *this* assignment
+  (Calling Bullshit, Fab, CS007 — distinct from assignment-1's own
+  exemplar) and compared structure/tone/throughline-technique directly
+  against SLOP2474 — see the extended exemplar-comparison entry above for
+  the finding (the course already does Calling Bullshit's single-metaphor
+  move, plus live cross-week callbacks in the lecture prose that neither
+  exemplar does as explicitly). `pnpm check` reconfirmed green (36 pages, 0
+  axe violations, no broken links, 6/6 tests). No code change, no
+  commit — a citable positive finding for the response-to-brief criterion,
+  not a defect. Not the last run.
 - Writing `PROCESS.md` incrementally during a build/deepen run (not only in
   the inside-24h finishing steps) worked well twice now — crit-2's two
   deepening fixes and assignment-1's shrimp-geometry fix were both written

@@ -7,43 +7,42 @@ deliverable: comp4020-ass2-baishi
 
 ## State
 
-This run (124h to cutoff) worked the prior run's one flagged angle to
-completion: a close prose read (voice/clarity, not content accuracy — the
-spec already checks content) of all ten lecture bodies and all twelve
-session bodies, the only pages that technique hadn't touched yet (home,
-assessments, and policies were already done). All 22 read cleanly —
-consistent voice, no circular clauses, no repetition, each week distinct
-and building on the last. Also read the three people bios and the week-01
-deck for the first time with this same lens (genuinely untried scope, not
-a re-check) — also clean; the deck's Qi Baishi epigraph
-("attributed to", correctly hedged) is a nice touch, not a defect.
+This run (117h to cutoff) found the repo already fully green from the prior
+run and did a light re-verification pass rather than manufacture busywork,
+per the prior run's own flagged option (a). `pnpm check`, `pnpm
+check:evidence`, and `pnpm audit` all clean; working tree already matched
+`origin/main` before this run started.
 
-Two cheap re-checks alongside: `pnpm audit` clean, `pnpm outdated` shows
-the same four major-only entries as before (still correctly left alone —
-bumping majors this close to cutoff for zero benefit isn't worth the CI/
-strictness risk). `pnpm check` and `pnpm check:evidence` both green,
-`PROCESS.md` still at 599/600 words with all 9 citations resolving.
+Tried the prior run's flagged option (b) too: checked whether the crit-4/
+crit-5 CSS-property-literacy lens (tap-highlight-color, touch-action scope,
+forced-colors border-loss, touch-callout/user-select — all from sustained-
+touch/custom-shaped-control findings on Drift and Two-Tone) has anything to
+apply to here. It doesn't: grepped every course-owned `.astro`/`.css`/`.ts`
+file for custom interactive markup and found only plain `<a>` links
+(TeachingTeam, lecture slide links, people mailto/url links) — no sustained
+touch/drag surface and no control shaped by background/box-shadow instead
+of a border. That lens is specific to game/instrument-style interaction
+surfaces this static content site doesn't have. A real "checked, doesn't
+apply" outcome, not a gap.
 
-**No defects found, no commits this run.** This is the expected outcome
-after four prior runs' worth of technical sensors (a11y, HTML validation,
-Lighthouse, CWV, keyboard tab order, 200%-zoom reflow, mobile viewport) and
-two full rounds of close prose reading (home/assessments/policies, then
-lectures/sessions/people/deck) — matching the crit-4/crit-5 precedent in
-`MEMORY.md` for what a thoroughly-worked repo's steady state looks like.
+Did a real live-browser pass against a fresh `pnpm preview`: home (desktop
+1920×1080) and a non-adjacent session page (mobile 390×844, zero horizontal
+overflow) and a lecture page with a real deck link (week-01, desktop) all
+console-clean. Server shut down afterwards (confirmed via `ss -ltnp`, not
+a process-name grep — see the pgrep-false-positive lesson in `MEMORY.md`).
+
+**No defects found, no commits this run.**
 
 ## Next action
 
-The close-prose-read technique has now covered every page type in the
-site at least once. Nothing is currently flagged as untried. A future run
-should either: (a) treat continued "nothing found" as expected and do a
-light re-verification pass (check/check:evidence/audit still green, one
-quick live-browser spot-check) rather than manufacturing busywork, or
-(b) if genuinely stuck for an angle, try applying a single-repo lesson
-from a *different* deliverable in `MEMORY.md` that hasn't been cross-checked
-against this repo yet (the technique that worked for crit-5's
-blur-vs-visibilitychange gap). Not the last run — no reflection expected
-(assignment, not a crit). When the prompt does call a run "last", the
-finishing steps are: re-verify locally, confirm `PROCESS.md` still answers
-the brief's "what you submit" prose (already done, see prior run), commit
-and push, and note that GitHub Pages deploy + repo visibility flip is
-harness-owned, not this agent's job.
+Nothing is currently flagged as untried. A future run should keep doing
+light re-verification (check/check:evidence/audit green, one live-browser
+spot-check on a fresh page combination) rather than manufacturing busywork
+— this is now the fifth-plus run in a row finding a genuinely clean repo,
+matching the crit-4/crit-5 precedent for what a thoroughly-worked
+deliverable's steady state looks like. Not the last run — no reflection
+expected (assignment, not a crit). When the prompt does call a run "last",
+the finishing steps are: re-verify locally, confirm `PROCESS.md` still
+answers the brief's "what you submit" prose (already done, see prior
+runs), commit and push, and note that GitHub Pages deploy + repo
+visibility flip is harness-owned, not this agent's job.

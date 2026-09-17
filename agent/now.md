@@ -5,75 +5,56 @@ deliverable: comp4020-ass2-baishi
 
 # Now
 
-## State (this run, 100h to cutoff)
+## State (this run, 93h to cutoff)
 
-Followed up on the prior run's own flagged lead — fetching slop.university to
-compare against the rest of the cohort. It exists but isn't a course listing:
-it's a satirical news site ("Office of Research Outputs," mock papers/posters
-about absurd metrics culture), not a directory of SlopU courses. Confirms
-there's genuinely nothing to compare against there; don't re-fetch it on a
-future run expecting a course catalogue to have appeared.
+Tried a genuinely new angle rather than repeat the seven-run-exhausted
+technical-sensor/prose-reread/exemplar-comparison battery: checked whether
+the existing AA-contrast fixes were ever verified in **dark mode**, not just
+light. They hadn't — every prior contrast check in this repo's history used
+`agent-browser`'s default light rendering.
 
-`pnpm check` still fully green (36 pages, 0 axe violations, no broken links,
-6/6 tests). `pnpm audit` clean. `pnpm outdated` showed one genuinely in-range
-patch (`@types/node` 24.13.4→24.13.5, still inside the `^24.13.4` pin) among
-otherwise-major-only entries (`@astrojs/mdx` 7→8, `typescript` 6→7, `vitest`
-4→5, all correctly left alone) — ran `pnpm update`, `pnpm check` stayed green,
-committed (`2669c3c`). A fresh live-browser spot check (home + week 9,
-1920×1080, via a rebuilt `dist/`) came back console-clean; note `pnpm preview
---port 4321` silently picked 4323 instead because an unrelated
-`benswift-me` dev server already held 4321 on this machine — check
-`ss -ltnp` for the real port before pointing `agent-browser` at it, don't
-assume the requested port was actually bound.
+Found a real, previously-unverified defect: `.at-card-title`'s existing fix
+(`653a9e2`, from a much earlier run) pins the title to `--at-secondary`, a
+**fixed hex** (`#8a5c13`, from `astro-theme-slop`'s `slop.css`), while the
+card background it sits on is theme-derived via `light-dark()`. Measured
+live with `agent-browser set media dark` + a canvas-based oklch→sRGB
+readback (same WCAG contrast maths as the theme's own `contrast.ts`, since
+that module's parser only handles brand tokens declared the `light-dark(oklch(...))`
+way, not this brand's flat hex pins — see the existing `MEMORY.md` entry on
+this exact gap): light mode holds at 5.71:1, dark mode drops to 3.51:1,
+under the 4.5:1 AA minimum for the title's actual computed size/weight
+(20.25px/600, not "large text" by the common ≥700-bold convention).
 
-`gh api repos/.../comp4020-ass2-baishi` still has no credential in this
-sandbox (`gh auth login` required) — already well-established as
-harness-owned in `MEMORY.md`, shouldn't have re-tried it; not worth trying
-again on a future run.
+The fix turned out elegant: `--at-primary` (the lockup gold that originally
+*failed* light mode at 3.43:1, the reason `653a9e2` existed) clears dark
+mode at 5.82:1 — primary and secondary are exact mirrors of each other
+across the two schemes. Now `color: light-dark(var(--at-secondary),
+var(--at-primary))`, verified live in both schemes, `pnpm check` green
+throughout. Grepped the repo for every other brand-colour literal/token
+reference — this is the only one in this course's own content, so no
+sibling instances to fix. Fixed and pushed
+(`ccea0a6`/`5d47b76`), `PROCESS.md` updated to cite it as a third live-browser
+defect, held to 600/600 words by tightening the "How I got here" prose
+(no content cut, just condensed) rather than trimming a moment out.
 
-## Prior state (2026-09-16 run)
-
-This run (111h to cutoff) found the repo still fully green (`pnpm check`: 36
-pages, 0 axe violations, no broken links, 6/6 spec tests) and tried a
-genuinely new angle rather than repeat the exhausted technical-sensor/
-prose-reread battery: fetched the brief's own three named exemplars —
-[Calling Bullshit](https://callingbullshit.org/),
-[Fab](https://fab.cba.mit.edu/classes/863.25/), and
-[CS007](https://cs007.blog/) — and compared their structure/register/
-throughline-technique directly against SLOP2474 (matching the working
-pattern already logged for assignment-1's Ciechanowski comparison, but never
-previously done for this specific assignment's own named exemplars).
-
-The comparison came back as a strong positive, not a defect: SLOP2474
-already has Calling Bullshit's move (a single governing metaphor —
-copy-vs-forgery's "missing paper," the note — defined precisely in week 1
-and then applied across every material) and, distinctively, does something
-neither exemplar does as explicitly — **live cross-week callbacks inside the
-lecture prose itself**. Read week-09.md and week-10.md fresh: week 9's
-synthetic-media lecture explicitly says "that's the same asymmetry from
-week 2's connoisseurship lecture," and week 10 says detection "works the way
-week 3's materials science worked for paintings" and that the arms race
-"from week 6's banknotes runs here too." This is a concrete, checkable
-instance of "one idea carried all the way through a semester" that a marker
-reading two non-adjacent weeks (per the assessment's own ten-minute reading
-protocol) would actually notice. No code change — this is a verification
-finding, recorded because it's genuine evidence for the "response to the
-brief" criterion, not busywork.
-
-`PROCESS.md` is already at 599/600 words with no room to add this without
-cutting something else — left as-is; it already cites the throughline
-decision generally, just not this specific cross-reference evidence.
+`gh api`/repo-visibility still harness-owned, not re-tried this run.
 
 ## Next action
 
-Nothing currently flagged as untried on the technical side — this is now a
-seventh-plus run finding a clean repo, and the one lead this run's prior
-handoff had flagged (slop.university as a cohort comparison point) is now
-closed as a dead end, not just untried. `PROCESS.md` is still at 599/600
-words with no room to add the cross-week-callback citation without cutting
-something else; leave as-is unless a future run finds something worth
-trimming to make room. Not the last run — no reflection expected (assignment,
-not a crit). When the prompt does call a run "last": re-verify locally,
-confirm `PROCESS.md` still answers the brief's "what you submit" prose
-(already done, see prior runs), commit and push, and note that GitHub Pages
-deploy + repo visibility flip is harness-owned, not this agent's job.
+**General technique worth reapplying to any future `astro-theme-university`
+deliverable, not just this one:** any brand-layer CSS override that pins a
+colour to defeat an AA failure needs checking against **both**
+`light-dark()` states if the thing it's tested against (a card background,
+a page background) is itself `light-dark()`-derived — a fix verified in
+only one scheme is only half-verified. This repo's `slop.css` pins flat hex
+brand tokens (not `light-dark()`), so any accent-coloured text sitting on a
+theme surface is a candidate for this exact asymmetry.
+
+For this repo specifically: not the last run — no reflection expected
+(assignment, not a crit). Nothing else currently flagged as untried on the
+technical side; the exemplar-comparison and clause-by-clause prose passes
+from prior runs still stand as exhausted. When the prompt does call a run
+"last": re-verify locally (including this dark-mode check one more time
+after any further CSS change), confirm `PROCESS.md` still answers the
+brief's "what you submit" prose, commit and push, and note that GitHub
+Pages deploy + repo visibility flip is harness-owned, not this agent's job.

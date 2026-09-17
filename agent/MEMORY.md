@@ -1101,6 +1101,35 @@ Durable self-knowledge, curated run by run; ephemeral state belongs in
   two nodes in the category license writing off the rest of the same
   category as "the same limitation, not a real defect" — each element
   still needs its own live pixel measurement before being cleared.
+  **Extended (2026-09-17, eighth run):** a fix that clears AA against a
+  `light-dark()`-derived background is only verified in *one* colour
+  scheme unless checked in both — `agent-browser`'s default rendering is
+  light, so seven prior runs' contrast checks on this repo never exercised
+  dark mode at all. `astro-theme-slop`'s `slop.css` pins `--at-secondary`
+  as a flat hex (`#8a5c13`), not a `light-dark()` token, while the card
+  background `.at-card-title` sits on (`--at-bg`/`--at-bg-elevated`) *is*
+  `light-dark()`-derived from `--at-primary` — so the same fixed text
+  colour has a different, independently-computed contrast ratio in each
+  scheme. The original fix (light-mode 5.71:1, chosen specifically because
+  `--at-primary` failed light mode at 3.43:1) turned out to drop to 3.51:1
+  in dark mode — a fresh AA failure nobody had reason to look for, because
+  the check that motivated the original fix was itself scoped to light
+  mode only. Confirmed live via `agent-browser set media dark` + a
+  canvas-based oklch→sRGB readback (`ctx.fillStyle = oklchString; ctx.fillRect(...); ctx.getImageData(...)` —
+  canvas normalises any CSS colour syntax to sRGB bytes, useful whenever
+  `contrast.ts`'s own parser can't handle a mixed hex+`light-dark(oklch())`
+  pair, per the flat-hex-brand gap already logged above) computing the
+  same WCAG contrast formula `contrast.ts` uses. Fixed by discovering
+  primary and secondary are exact mirrors of each other across the two
+  schemes (primary clears dark at 5.82:1 where it fails light; secondary
+  clears light at 5.71:1 where it fails dark) and wrapping the CSS
+  override itself in `light-dark()`, rather than inventing a new colour —
+  `color: light-dark(var(--at-secondary), var(--at-primary))`. General
+  check for any future `astro-theme-university` deliverable: whenever a
+  brand-layer override pins a fixed colour against a theme surface to fix
+  or avoid an AA failure, verify it in *both* `light-dark()` states if the
+  surface it sits on is itself `light-dark()`-derived, not just whichever
+  scheme the checking tool happens to default to.
 
 - **A library's own bot-detection (`navigator.webdriver`) can make a real,
   shipped behaviour structurally unobservable through `agent-browser`, a
@@ -1783,6 +1812,18 @@ Durable self-knowledge, curated run by run; ephemeral state belongs in
   update` picked it up, `pnpm check` stayed green, committed (`2669c3c`). A
   fresh live-browser spot check (home + week 9) came back console-clean.
   `PROCESS.md` still full at 599/600 words. Not the last run.
+  An eighth run, 2026-09-17, 93h-to-cutoff, tried a genuinely new angle
+  instead of the exhausted technical-sensor/prose-reread/exemplar-comparison
+  battery: checked whether prior contrast fixes had ever been verified in
+  dark mode, not just light — they hadn't, across seven prior runs. Found a
+  real, previously-unverified AA failure (see the new dedicated
+  `light-dark()`/dark-mode entry above for the mechanism and fix) and fixed
+  it: `.at-card-title`'s colour is now `light-dark(var(--at-secondary),
+  var(--at-primary))` rather than the fixed `--at-secondary` alone. Fixed
+  and pushed (`ccea0a6`/`5d47b76`), `PROCESS.md` updated to cite it as a
+  third live-browser defect, held to exactly 600/600 words by tightening
+  the "How I got here" prose rather than cutting a moment. `pnpm check`/
+  `check:evidence` both green. Not the last run.
 - Writing `PROCESS.md` incrementally during a build/deepen run (not only in
   the inside-24h finishing steps) worked well twice now — crit-2's two
   deepening fixes and assignment-1's shrimp-geometry fix were both written

@@ -145,6 +145,19 @@ Durable self-knowledge, curated run by run; ephemeral state belongs in
   reads fine in isolation. Wrap each `eval` snippet in an IIFE
   (`(() => { const cs = ...; return ...; })()`) with locally-scoped names so
   repeated ad hoc DOM-inspection snippets in one session never collide.
+- `agent-browser console` can print debug/prefetch lines that name a
+  completely different repo (e.g. `Prefetching
+  http://localhost:4321/comp4020-ass2-yunlin/sessions/` while the page open in
+  this session was genuinely `comp4020-ass2-baishi`, confirmed via
+  `window.location.href`) — this sandboxed container is shared with other
+  concurrent agent sessions, and console output is not scoped to the one page
+  this session navigated. Confirmed on `comp4020-ass2-baishi` (2026-09-17):
+  the visible page content and `window.location.href` were correctly this
+  repo's own; only the `console` command's output leaked a different
+  student's repo name. Don't read a foreign repo name in `console` output as
+  evidence of contamination in *this* repo's build — cross-check
+  `window.location.href` first, and filter the foreign lines out rather than
+  investigating them.
 
 ## Working patterns that held up
 
@@ -1153,6 +1166,38 @@ Durable self-knowledge, curated run by run; ephemeral state belongs in
   this deliverable's own content — the same course-vs-platform boundary
   that already governs which `spec/` tests are this repo's to write.
 
+- **The assessment page's own HD artefact-band language — "holds up under
+  use it wasn't designed for: the keyboard, a resize mid-interaction" —
+  applies to a slide deck exactly as much as to an interactive prototype
+  like assignment-1's slider, and had never been checked against the deck
+  specifically across eight prior runs on `comp4020-ass2-baishi`.** The
+  deck is `astromotion`'s reveal.js-based component (`.reveal`/`.slides`/
+  `section.past/.present/.future`, `#/N` hash routing). Confirmed live
+  (2026-09-17): navigate several slides via real `agent-browser press
+  ArrowRight`, note the settled `window.location.hash`, then
+  `agent-browser set viewport` straight to the other marking size with no
+  reload — hash and the visually rendered slide (confirmed by screenshot,
+  not `document.body.innerText`, see the next point) both held steady
+  across the resize, console clean. "Checked, confirmed correct," no code
+  change — this is upstream platform code either way, so a bug here would
+  have been out of scope to fix (same boundary as the `navigator.webdriver`
+  and Tab-focus entries above), but the check itself is this deliverable's
+  to run since the marking rubric literally names it.
+  **Testing-technique trap found along the way:** `document.body.innerText`
+  is not a reliable read of "what slide is currently showing" on a
+  reveal.js deck — reveal keeps every slide's text in the DOM at all times
+  and hides the inactive ones via `hidden`/`display:none`, but
+  `innerText` on Chromium can still include hidden-element text in some
+  configurations, so two genuinely different hash states read back
+  *identical* `innerText` and looked like a stuck resize bug before a
+  screenshot (or `document.querySelector('section.present')`, reveal's own
+  "currently visible" class) proved otherwise. Also: reveal.js only updates
+  the URL hash on an actual slide transition, not on each fragment reveal —
+  a run of `ArrowRight` presses can show one hash-unchanged step (fragment
+  reveal) then a hash jump of more than 1 (a real slide transition past a
+  vertical-stack index), and that's normal reveal.js behaviour, not a
+  navigation bug, before concluding the number sequence itself is broken.
+
 ## Open threads for future runs
 
 - `comp4020-crit5-baishi` (Two-Tone, a colour-match falling-circle dodge
@@ -1824,6 +1869,26 @@ Durable self-knowledge, curated run by run; ephemeral state belongs in
   third live-browser defect, held to exactly 600/600 words by tightening
   the "How I got here" prose rather than cutting a moment. `pnpm check`/
   `check:evidence` both green. Not the last run.
+  A ninth run, 2026-09-17, 87h-to-cutoff, checked the raw assignment JSON's
+  `spec` field directly (not the WebFetch tool's AI-paraphrased summary,
+  which had rendered the course-code rule as "three-digit" ambiguously) and
+  confirmed the "SLOPxxxx keeps the three digits the repo arrived with,
+  first digit is the ANU level" rule is already correctly schema-enforced
+  in `course-config.ts` (a zod `superRefine` ties `level` to the code's own
+  first digit, with a comment naming why 2 was chosen) — nothing to fix,
+  a genuine "checked, confirmed correct" against a clause no prior run had
+  explicitly verified. `pnpm audit` clean, `pnpm outdated` unchanged (same
+  three major-only entries). Fetched the assessment page directly for the
+  first time this run and confirmed `PROCESS.md`'s commit-citation format
+  (hash as link text, GitHub commit URL as target) matches its stated rule
+  exactly. The main finding: a live resize-mid-interaction check on the
+  slide deck specifically (see the new dedicated `MEMORY.md` entry above —
+  the assessment page's own HD artefact-band language names exactly this,
+  and it had never been run against the deck across eight prior runs) came
+  back clean — hash and rendered slide both held steady across a real
+  viewport change mid-navigation, console clean. No code change, no
+  commit — a legitimate "checked, confirmed correct" outcome. Not the last
+  run.
 - Writing `PROCESS.md` incrementally during a build/deepen run (not only in
   the inside-24h finishing steps) worked well twice now — crit-2's two
   deepening fixes and assignment-1's shrimp-geometry fix were both written

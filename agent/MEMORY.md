@@ -1198,6 +1198,37 @@ Durable self-knowledge, curated run by run; ephemeral state belongs in
   vertical-stack index), and that's normal reveal.js behaviour, not a
   navigation bug, before concluding the number sequence itself is broken.
 
+- **A hand-rolled contrast checker inherits the exact same blind spot as
+  axe-core: neither can read an element whose real background comes from a
+  `background-image`/gradient rather than a solid `background-color`, and
+  both will misreport such an element rather than skip it cleanly.** Prior
+  dark-mode contrast checks on `comp4020-ass2-baishi` had only ever
+  verified the one element a specific fix targeted (the card-title AA
+  failure); a later run wrote a general-purpose sweep — walk every element
+  with direct text, resolve its colour and the nearest ancestor's opaque
+  `background-color`, convert both through a 1×1 canvas (handles oklch the
+  same way `contrast.ts` does), compute WCAG contrast, flag anything under
+  the size-appropriate AA threshold — and ran it via `agent-browser eval`
+  against every distinct page type in `set media dark`. Every page came
+  back clean except the home hero title, which flagged at a false
+  `ratio 1.02`: the walk-up-for-background-color loop, finding no ancestor
+  with an opaque solid colour under the hero's image+gradient stack, fell
+  through to an unrelated ancestor's colour instead of the real composite.
+  Confirmed as a checker artefact, not a real bug, by reading the source
+  directly rather than trusting the number: `.at-hero-title`'s `color` is
+  `var(--at-white)` and the scrim is `linear-gradient(to top, rgb(0 0 0 /
+  80%), ...)` — both fixed literals with zero `light-dark()` involvement
+  anywhere in the chain, so the hero's actual rendering is provably
+  scheme-independent, and the light-mode darkening fix from three runs
+  earlier already covers dark mode by construction. General lesson: any
+  bespoke or off-the-shelf contrast tool built on "read `background-color`
+  up the tree" needs the same exclusion axe-core effectively has for
+  image/gradient surfaces — a flag on exactly that class of element is
+  worth checking against the source before trusting it as a fresh
+  defect, and a clean sweep everywhere *else* is still worth having, since
+  it's the first time every page type (not just one previously-fixed
+  element) had ever been checked in dark mode at all.
+
 ## Open threads for future runs
 
 - `comp4020-crit5-baishi` (Two-Tone, a colour-match falling-circle dodge
@@ -1889,6 +1920,20 @@ Durable self-knowledge, curated run by run; ephemeral state belongs in
   viewport change mid-navigation, console clean. No code change, no
   commit — a legitimate "checked, confirmed correct" outcome. Not the last
   run.
+  A tenth run, 2026-09-18, 76h-to-cutoff, ran `pnpm check`/`check:evidence`
+  green (unchanged) then tried a genuinely new angle: a **full-site**
+  dark-mode contrast sweep with a hand-rolled canvas-based checker (see the
+  new dedicated `MEMORY.md` entry above), rather than trusting the one
+  element a prior fix had verified in dark mode to represent the whole
+  site. Checked home, sessions index, lectures index, assessments index,
+  people index, policies, one lecture, one assessment, and the week-1
+  deck's current slide — all clean except a false-positive flag on the
+  hero title, traced to the checker's own background-image/gradient blind
+  spot (the same category axe-core has) rather than a real defect: the
+  hero's colour and scrim are fixed literals with no `light-dark()`
+  anywhere, so it's provably scheme-independent and the existing light-mode
+  fix already covers it. No code change, no commit — a legitimate "checked
+  more thoroughly, confirmed correct" outcome. Not the last run.
 - Writing `PROCESS.md` incrementally during a build/deepen run (not only in
   the inside-24h finishing steps) worked well twice now — crit-2's two
   deepening fixes and assignment-1's shrimp-geometry fix were both written

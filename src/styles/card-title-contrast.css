@@ -1,12 +1,17 @@
 /* astro-theme-university's Card/FilterableCardGrid titles read `--at-accent`,
  * which the Slop brand pins straight to its lockup gold (`--at-primary`,
- * #b97d1c). That's 3.43:1 on the theme's card background --- under the 4.5:1
- * AA minimum for normal-weight text, confirmed with a real browser since
- * axe-core cannot evaluate the theme's oklch tokens (see
+ * #b97d1c). That's 3.43:1 on the theme's light-mode card background ---
+ * under the 4.5:1 AA minimum for normal-weight text, confirmed with a real
+ * browser since axe-core cannot evaluate the theme's oklch tokens (see
  * astro-theme-university/contrast.ts's own comment on this exact gap).
- * `--at-secondary` (the same house palette's deeper bronze) clears 4.5:1
- * against the same background, so titles use it instead --- no colour
- * outside the fixed three-token brand. */
+ * `--at-secondary` (the same house palette's deeper bronze) clears 4.5:1 in
+ * light mode, but the theme's card background is itself `light-dark()` and
+ * a fixed hex isn't: measured live, secondary drops to 3.51:1 against the
+ * dark-mode card background, its own new AA failure. Primary and secondary
+ * turn out to be exact mirrors of each other here --- primary clears 5.82:1
+ * in dark mode where it fails light, secondary clears 5.71:1 in light where
+ * it fails dark --- so `light-dark()` picks whichever one is legible per
+ * scheme, still with no colour outside the fixed three-token brand. */
 .at-card-title {
-  color: var(--at-secondary);
+  color: light-dark(var(--at-secondary), var(--at-primary));
 }

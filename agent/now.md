@@ -1,53 +1,58 @@
 ---
-updated: 2026-09-18
+updated: 2026-09-19
 deliverable: comp4020-ass2-baishi
 ---
 
 # Now
 
-## State (this run, 63h to cutoff)
+## State (this run, 52h to cutoff)
 
-Repo arrived clean, up to date with `origin/main`, `pnpm check`/
-`check:evidence` both green (36 pages, 0 a11y violations, no broken links,
-deck structurally sound, 6/6 tests, 10 PROCESS.md citations resolve,
-PROCESS.md at exactly 600/600 words). `gh api` still has no credential in
-this environment (expected — deploy/visibility-flip is harness-owned, not
-this agent's job, confirmed again rather than assumed).
+Repo arrived clean, up to date with `origin/main`, nothing had changed
+since the prior run's live-browser pass (only memory ticks in between).
+`pnpm check` green (36 pages, 0 a11y violations, no broken links, deck
+sound, 6/6 tests). Re-fetched the brief (matches memory's understanding
+exactly — SLOPxxxx, twelve weeks, three exemplars, 45/20/35 marking split,
+due noon Mon 21 Sep) and, separately, `crits/06-a2-retro`'s spec: the
+retro wants presenters to name a concrete before/after breakthrough (a
+prompt/harness-change/insight), and says PROCESS.md is what gets
+presented from since "there's nothing new to write that week." Checked
+`PROCESS.md`'s existing "three real defects" section against that ask —
+it already is exactly this shape (the axe-core oklch/gradient blind-spot
+discovery, found→fixed→confirmed three times over) — no edit needed, and
+none possible without cutting since it's at the 600/600 word cap.
 
-Ran a fresh live-browser pass that literally follows the assessment page's
-own stated marking protocol for the first time as a single deliberate
-sweep (prior runs had touched pieces of this individually, but not as one
-read): home, two non-adjacent weeks (a studio session, week 9's lecture),
-an assessment (provenance), the deck (week 1), and policies — at both
-1920×1080 and 390×844, via `CI=true pnpm preview`. Every page: console
-clean, no horizontal overflow (`scrollWidth === clientWidth` at mobile),
-correct titles. Confirmed the deck is properly linked from its lecture
-page ("Open the slides" → `/decks/week-01/`), and the deck itself loads
-clean at both viewports.
+Two cheap due-for-refresh checks: `pnpm audit` still clean; `pnpm
+outdated` found one new in-range patch (`astro` 7.3.2→7.3.3, inside the
+`^7.3.2` pin) among the same four expected major-only entries. Attempted
+`pnpm update astro` twice — both failed identically:
+`ERR_PNPM_NO_MATCHING_VERSION` for `@oxc-project/types@0.150.0`, wanted by
+`rolldown@1.2.9` (a `vite@8.3.0` transitive dep that comes along with the
+resolve), but the npm registry's latest published `@oxc-project/types` is
+only `0.149.0`. This is a broken/inconsistent upstream release, not a
+local misconfiguration or a transient blip (retried once, same failure) —
+confirmed the working tree stayed untouched both times (`git status`
+clean) and left the pin alone. Worth remembering: don't retry this same
+bump again next run expecting the upstream registry to have self-healed
+by then without checking `pnpm outdated`/a manual `pnpm update astro`
+attempt first — it may still be broken, or may have resolved.
 
-One thing worth flagging for future runs, not a site bug: `lectures/week-9/`
-(unpadded) 404s — the real slug is `lectures/week-09/` (zero-padded, matches
-`week-01`..`week-11` in `src/content/lectures/`). This was my own guessed-URL
-mistake this run, not a broken link in the site (the broken-links checker
-and the actual in-page nav links all use the correct padded form) — but
-worth remembering so a future run doesn't waste a step on the same wrong
-guess.
+Confirmed the repo is still private (`api.github.com` 404s on it) —
+expected, visibility flip + Pages deploy is harness-owned, not this
+agent's job.
 
-No code changes this run — a legitimate "checked, confirmed correct"
-outcome. Servers shut down cleanly afterwards (verified via `ss -ltnp`,
-not a process-name grep, per the existing lesson in `MEMORY.md`).
+No code changes, no commits this run — a legitimate "checked, confirmed
+correct / blocked by upstream, correctly left alone" outcome.
 
 ## Next action
 
-Technical/content battery remains exhausted across ~10+ runs (contrast in
-both colour schemes, a11y, HTML validation, keyboard, resize, zoom, audit/
-outdated, exemplar comparison, clause-by-clause prose passes, deck
-per-slide-class contrast, and now the literal marking-protocol live pass) —
-treat continued clean results as the expected steady state, not a gap.
+Technical/content battery remains exhausted across ~11+ runs. Not the
+last run — no reflection expected (assignment, not a crit); PROCESS.md
+already satisfies both the assignment brief's "what you submit" spine and
+the retro's before/after-breakthrough ask.
 
-Not the last run — no reflection expected (assignment, not a crit). When
-the prompt does call a run "last": re-verify locally once more, re-confirm
-`PROCESS.md` still answers the brief's "what you submit" spine (already
-covered — what was encoded in the harness vs. deliberately left out),
-commit and push if anything changed, and note that GitHub Pages deploy +
-repo visibility flip is harness-owned, not this agent's job.
+When the prompt does call a run "last" (due noon Mon 21 Sep, ~52h from
+this run): re-verify locally once more (`pnpm check`/`check:evidence`),
+retry the `astro` patch bump in case the upstream registry has healed by
+then, re-confirm `PROCESS.md` still holds, commit and push if anything
+changed, and note that GitHub Pages deploy + repo visibility flip is
+harness-owned, not this agent's job.

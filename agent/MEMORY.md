@@ -1228,6 +1228,61 @@ Durable self-knowledge, curated run by run; ephemeral state belongs in
   defect, and a clean sweep everywhere *else* is still worth having, since
   it's the first time every page type (not just one previously-fixed
   element) had ever been checked in dark mode at all.
+- **The same hand-rolled contrast checker's "walk up to the nearest opaque
+  ancestor" heuristic has a second, distinct blind spot from the
+  gradient/image one above: it also needs to check an element's own local
+  `background-color` before walking up at all, not just an ancestor's.** A
+  heading with its own solid highlight-box background (astro-theme-slop's
+  deck styling: an `<h1>` on a title slide sits on its own opaque amber
+  box, not the page's dark canvas) will falsely flag as invisible if the
+  checker skips straight to `getComputedStyle(document.body)` or otherwise
+  never samples the element itself — on `comp4020-ass2-baishi`'s week-1
+  deck this produced a `ratio 1.00` false alarm on the opening slide's H1,
+  which looked alarming (a near-black-on-near-black title, the single most
+  visible element in the deck) until walking the DOM from the H1 itself
+  confirmed its immediate background actually is the amber box
+  (`rgb(185,125,28)`), giving a real ratio of 5.57. Fix the checker to test
+  `el` before `el.parentElement`, not just walk ancestors. A second,
+  unrelated false positive found the same session: `astro-theme-university`'s
+  shared `.at-heading-anchor` permalink icon (the small "#" link next to
+  every H1/H2/H3 site-wide) reads as identical-color-to-background by
+  design — it's a hover-reveal affordance with a genuine `0×0`
+  `getBoundingClientRect()` when inactive (confirmed directly, not assumed),
+  so a checker that doesn't skip zero-size elements will flag it forever.
+  Both are checker bugs, not site bugs, and the second is theme code
+  (out of scope for this course's content either way, same boundary as the
+  `navigator.webdriver`/focus-ring findings above) — exclude
+  `.at-heading-anchor` and zero-size elements from any future run of this
+  checker. General lesson stacking on the entry above: a bespoke contrast
+  tool accumulates blind spots one exotic layout at a time (gradients, then
+  local-background boxes, then hover-reveal zero-size elements) — each
+  needs its own fix, and a clean result from an *earlier* version of the
+  checker doesn't mean a *later*, more thorough sweep with the same tool
+  won't need another correction first.
+- **A component that documents itself as "dark surfaces" should be checked
+  once for whether `set media dark`/`light` actually changes anything on
+  it before being swept "in dark mode" — if it doesn't, every such sweep on
+  that page is testing a scheme-invariant fixed palette, not exercising a
+  real light/dark toggle.** Confirmed directly on
+  `comp4020-ass2-baishi`'s deck (`src/decks/theme.css`'s own comment says
+  "Deck pages are dark surfaces"): `body`'s computed `background-color`
+  and `color` were byte-identical (`rgb(13,13,13)` / `rgb(230,230,230)`)
+  under `agent-browser set media dark` and the default (light) state. This
+  isn't a defect — the deck is deliberately always-dark, matching
+  `astromotion`'s own reveal.js convention of dark presentation surfaces
+  regardless of site theme — but it means a future run shouldn't credit
+  "checked the deck in dark mode" as distinct evidence beyond "checked the
+  deck," since there is no second state to have missed. What *is* worth
+  checking on a fixed-dark-surface deck, and hadn't been until this run:
+  every slide and every slide *class* the deck's own content actually
+  uses (`impact`, `quote`, `centered`, plain) — prior deck checks
+  (resize-mid-interaction, the very first dark-mode sweep) had only ever
+  looked at slide 1. Stepped through all 8 slides of the week-1 deck with
+  `agent-browser press ArrowRight` plus the corrected local-background
+  checker above; every heading/paragraph/list-item/link/blockquote across
+  all 4 classes passed AA at its own real local background. "Checked,
+  confirmed correct," no code change — but a genuinely new, non-repeated
+  check, not a rerun of the first slide's own already-clean result.
 
 ## Open threads for future runs
 
@@ -1934,6 +1989,22 @@ Durable self-knowledge, curated run by run; ephemeral state belongs in
   anywhere, so it's provably scheme-independent and the existing light-mode
   fix already covers it. No code change, no commit — a legitimate "checked
   more thoroughly, confirmed correct" outcome. Not the last run.
+  An eleventh run, 2026-09-18, 69h-to-cutoff, tried a genuinely new angle:
+  swept the week-1 deck's contrast across all 8 slides and all 4 slide
+  classes it actually uses (default, `impact`, `quote`, `centered`),
+  rather than the slide-1-only checks every prior deck pass had done. First
+  confirmed the deck is a scheme-invariant fixed-dark surface (`set media
+  dark`/`light` produced byte-identical computed colours), settling that
+  no "dark mode" framing adds anything on this specific page — see the two
+  new dedicated `MEMORY.md` entries above for that finding and for two
+  checker false-positives found and fixed along the way (an element's own
+  local opaque background needs checking before walking up to ancestors;
+  the theme's shared `.at-heading-anchor` permalink icon is a zero-size
+  hover-reveal decoy, not a real element to test). After both checker
+  fixes, all 8 slides passed AA cleanly. No code change, no commit — a
+  legitimate "checked, confirmed correct" outcome, and a genuinely
+  untried angle (per-slide-class deck coverage) rather than a repeat. Not
+  the last run.
 - Writing `PROCESS.md` incrementally during a build/deepen run (not only in
   the inside-24h finishing steps) worked well twice now — crit-2's two
   deepening fixes and assignment-1's shrimp-geometry fix were both written

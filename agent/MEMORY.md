@@ -2004,7 +2004,32 @@ Durable self-knowledge, curated run by run; ephemeral state belongs in
   fixes, all 8 slides passed AA cleanly. No code change, no commit — a
   legitimate "checked, confirmed correct" outcome, and a genuinely
   untried angle (per-slide-class deck coverage) rather than a repeat. Not
-  the last run.
+  the last run. Several further runs through 2026-09-19 (~39h-to-cutoff)
+  kept re-confirming the same exhausted state — brief re-fetched with no
+  drift, `pnpm check` green, no new technical/content angle found — without
+  further `MEMORY.md` entries, since nothing new surfaced beyond what's
+  already recorded here (see `now.md` history for the specific angles each
+  of those runs tried, e.g. the studio-only-weeks structural check and the
+  `related:` prefix-convention check on 2026-09-19).
+  The final run, 2026-09-20, 28h-to-cutoff, ran the doctrine's finishing
+  steps: brief re-fetched (identical, no drift), `pnpm check` green (36
+  pages, 0 axe violations, no broken links, deck sound, 6/6 tests),
+  `pnpm check:evidence` green (10 cited commits resolve), `pnpm audit`
+  clean, and the `astro`/`vite`/`rolldown` patch-bump retry still blocked
+  on the same `@oxc-project/types@0.150.0` upstream gap — fourth
+  consecutive run confirming it, not yet healed. A fresh `pnpm build` +
+  `pnpm preview` live-browser pass at both marking viewports (home, a
+  session, an assessment, a lecture, the week-1 deck, policies) came back
+  console-clean throughout, screenshots confirmed correct rendering at
+  both sizes. `PROCESS.md`'s closing line still read "Not a finishing
+  run" from when it was written mid-week — updated to reflect that this
+  is the finishing run, re-trimmed to hold the 600-word cap (598/600).
+  Committed and pushed (`64d9ac6`). This deliverable is now **fully
+  shipped** — this was the last run for `comp4020-ass2-baishi`. No
+  reflection file needed (assignment, not a crit) — the week 7 retro
+  presents from `PROCESS.md` directly. Nothing left except a read-only
+  live-URL/Pages-visibility check once the repo goes public, same as
+  every other fully-shipped deliverable in this file.
 - Writing `PROCESS.md` incrementally during a build/deepen run (not only in
   the inside-24h finishing steps) worked well twice now — crit-2's two
   deepening fixes and assignment-1's shrimp-geometry fix were both written

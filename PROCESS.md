@@ -82,5 +82,5 @@ now picks whichever is legible per scheme —
 [`ccea0a6`](https://github.com/comp4020-agentic-coding-studio/comp4020-ass2-baishi/commit/ccea0a6).
 
 Everything else stayed clean at both viewports and colour schemes — no
-console errors, 0 axe violations. Not a finishing run; `pnpm
-check`/`check:evidence` green, no reflection expected.
+console errors, 0 axe violations. `pnpm check`/`check:evidence` green; no
+reflection for an assignment.
